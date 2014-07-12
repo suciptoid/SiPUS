@@ -1,0 +1,444 @@
+#include "utama.h"
+#include "ui_utama.h"
+#include <sys/databaseconfig/databaseconfig.h>
+#include <sys/user/user.h>
+#include <modul/peminjaman/peminjaman.h>
+
+#include <QDebug>
+#include <QMessageBox>
+#include <QShortcut>
+#include <QLocale>
+
+Utama::Utama(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::Utama)
+{
+    ui->setupUi(this);
+    this->showMaximized();
+    this->setWindowTitle("SiPUS | "+ QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate().currentDate(),"dd MMMM yyyy") );
+    ui->tabMain->setCurrentIndex(0);
+    halamanPinjam = 0;
+    ui->tblKatalog->verticalScrollBar()->sliderPosition();
+    connect(ui->tblPeminjaman->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(tblPinjamBottom(int)));
+    //Shortcut
+    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q), this, SLOT(close()));
+
+    //CONNECT
+    connect(ui->tabMain,SIGNAL(currentChanged(int)),this,SLOT(getTableData(int)));
+    //connect(ui->tblKatalog,SIGNAL(entered(QModelIndex)),this,SLOT(katEnableButton()));
+
+    //Inisialisasi Window DB
+    configWindow = new DatabaseConfig(this);
+    configWindow->setFixedSize(configWindow->size());
+
+    //Chek Db Connected
+    if(!configWindow->isDbConnect()){
+
+        configWindow->show();
+        this->centralWidget()->setDisabled(true);
+        ui->mainToolBar->setDisabled(true);
+        QMessageBox::critical(configWindow,"Error : Koneksi Database","Gagal Menghubungi pusat data. Mohon Periksa Kembail !\n\n"+configWindow->getError());
+
+    }else{
+        //Menghubungkan Database
+        configWindow->getDb().open();
+        //Chek Login
+        loginWindow = new LoginWindow(this);
+        if(userId.isEmpty() || userId.isNull()){
+            //Matikan Menu Utama
+            this->centralWidget()->setDisabled(true);
+            ui->mainToolBar->setDisabled(true);
+            //Munculkan Login Form
+            loginWindow->show();
+
+            //Peminjaman
+
+        }
+    }
+    //********************************************* KATALOG *********************************************//
+    //Class Katalog
+    katalog = new KatalogBuku();
+    //Buat Model Tabel
+    modelKatalog = new QStandardItemModel(2,6);
+
+    //Set Value Combo Box
+    ui->catKomboKolom->addItems(QStringList()<<"Kd. Buku"<<"Judul"<<"Pengarang"<<"Penerbit");
+    ui->catKomboStatus->addItems(QStringList()<<"Semua"<<"Tersedia"<<"Kosong");
+    //Setting Tabel
+    ui->tblKatalog->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tblKatalog->setSortingEnabled(true);
+    ui->tblKatalog->setModel(modelKatalog);
+    ui->tblKatalog->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tblKatalog->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tblKatalog->horizontalHeader()->setStretchLastSection(true);
+
+    //********************************************* KATALOG *********************************************//
+
+    //********************************************* PEMINJAMAN *********************************************//
+    pinjam = new Peminjaman();
+
+    model = new QStandardItemModel(2,7,this);
+    //Isi Data Peminjaman
+    //pinjam->cariPeminjaman(model,"siswa","","");
+
+    //Atur Layout Tabel Peminjaman
+    ui->tblPeminjaman->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tblPeminjaman->setSortingEnabled(true);
+    ui->tblPeminjaman->resizeColumnsToContents();
+    ui->tblPeminjaman->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tblPeminjaman->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tblPeminjaman->horizontalHeader()->setStretchLastSection(true);
+    ui->tblPeminjaman->setModel(model);
+
+    setTblPeminjaman();
+
+    //Combo Cari By
+    ui->comboCari->addItems(QStringList()<<"No. Induk"<<"Buku");
+    //Combo Status
+    ui->comboStatus->addItems(QStringList()<<"Semua"<<"Kembali"<<"Belum Kembali");
+    //Jumlah Data dan Pagination
+    ui->totalDataPinjam->setText(QString::number(pinjam->getJumlahData()));
+    //********************************************* PEMINJAMAN *********************************************//
+
+    //Statistik
+    this->setStatistik();
+
+}
+
+void Utama::on_actionKeluar_triggered()
+{
+    this->close();
+}
+
+void Utama::on_actionKonfigurasi_DB_triggered()
+{
+    configWindow->show();
+}
+
+void Utama::unLock(){
+    this->centralWidget()->setEnabled(true);
+    ui->mainToolBar->setEnabled(true);
+}
+
+void Utama::getTableData(int tab){
+    //Slot TabChange
+    switch (tab) {
+    case 0:
+        //Welcome
+        this->setStatistik();
+        break;
+    case 1:
+        //Katalog
+        ui->lKatalogCari->setFocus();
+        if(ui->lKatalogCari->text().isEmpty()){
+            katalog->cariKatalog(modelKatalog,"kd_buku","","");
+            this->setTblKatalog();
+        }
+        break;
+    case 2:
+        //Peminjaman
+        ui->lCariPinjam->setFocus();
+        halamanPinjam = 0;
+        if(ui->lCariPinjam->text().isEmpty()){
+            model->clear();
+            pinjam->cariPeminjaman(model,"siswa","","",QString::number(halamanPinjam));
+            this->setTblPeminjaman();
+            ui->totalPagePinjam->setText(QString::number(pinjam->getJumlahResult()));
+        }
+        break;
+    }
+}
+
+//End
+Utama::~Utama()
+{
+    delete ui;
+    configWindow->getDb().close();
+}
+
+
+void Utama::setTblPeminjaman(){
+
+    model->setHorizontalHeaderItem(0, new QStandardItem(QString("Peminjam")));
+    model->setHorizontalHeaderItem(1, new QStandardItem(QString("Kode")));
+    model->setHorizontalHeaderItem(2, new QStandardItem(QString("Judul")));
+    model->setHorizontalHeaderItem(3, new QStandardItem(QString("Tgl. Pinjam")));
+    model->setHorizontalHeaderItem(4, new QStandardItem(QString("Tgl. Tempo")));
+    model->setHorizontalHeaderItem(5, new QStandardItem(QString("Tgl. Kembali")));
+    model->setHorizontalHeaderItem(6, new QStandardItem(QString("Status")));
+
+    ui->tblPeminjaman->setColumnWidth(0, 100);//peminjam
+    ui->tblPeminjaman->setColumnWidth(1, 120);//kode
+    ui->tblPeminjaman->setColumnWidth(2, 350);//judul
+    ui->tblPeminjaman->setColumnWidth(3, 160);//pinjam
+    ui->tblPeminjaman->setColumnWidth(4, 160);//tempo
+    ui->tblPeminjaman->setColumnWidth(5, 160);//kembali
+    ui->tblPeminjaman->setColumnWidth(6, 200);//status
+
+    ui->totalDataPinjam->setText(QString::number(pinjam->getJumlahData()));
+    ui->lBelumKembali->setText(QString::number(pinjam->getBelumKembali()));
+}
+
+void Utama::setTblKatalog(){
+    modelKatalog->setHorizontalHeaderItem(0, new QStandardItem(QString("Kode Buku")));
+    modelKatalog->setHorizontalHeaderItem(1, new QStandardItem(QString("Judul")));
+    modelKatalog->setHorizontalHeaderItem(2, new QStandardItem(QString("Pengarang")));
+    modelKatalog->setHorizontalHeaderItem(3, new QStandardItem(QString("Penerbit")));
+    modelKatalog->setHorizontalHeaderItem(4, new QStandardItem(QString("Stok")));
+    modelKatalog->setHorizontalHeaderItem(5, new QStandardItem(QString("Tersedia")));
+
+    ui->tblKatalog->setColumnWidth(0, 200);//Kode Buku
+    ui->tblKatalog->setColumnWidth(1, 400);//Judul
+    ui->tblKatalog->setColumnWidth(2, 250);//Pengarang
+    ui->tblKatalog->setColumnWidth(3, 250);//Penerbit
+    ui->tblKatalog->setColumnWidth(4, 50);//Stok
+    ui->tblKatalog->setColumnWidth(5, 10);//Tersedia
+}
+
+
+void Utama::on_lCariPinjam_returnPressed()
+{
+    //Reset Halaman Pinjam
+    halamanPinjam = 0;
+    ui->currentPagePinjam->setText(QString::number(halamanPinjam+1));
+    //Combobox Kolom / Cari berdasar
+    QString kolom;
+    switch (ui->comboCari->currentIndex()){
+    case 0:
+        kolom = "siswa";
+        break;
+    case 1:
+        kolom = "buku";
+        break;
+    }
+    //Combobox Status
+    QString status;
+    switch (ui->comboStatus->currentIndex()) {
+    case 0:
+        status = "";
+        break;
+    case 1:
+        status = "1";
+        break;
+    case 2:
+        status = "0";
+        break;
+    default:
+        status = "";
+    }
+
+    QString value = ui->lCariPinjam->text();
+    //Fungsi Cari Data Peminjaman
+    pinjam->cariPeminjaman(model,kolom,value,status,QString::number(halamanPinjam));
+
+    if(pinjam->isPeminjamSatu() && ui->comboCari->currentIndex() == 0){
+        QSqlQuery chekPinjam;
+        chekPinjam.exec("SELECT COUNT(*) FROM tbl_peminjaman WHERE kembali = \"0\" AND siswa = \""+ui->lCariPinjam->text()+"\" ");
+        chekPinjam.next();
+        Anggota *anggota = new Anggota();
+        anggota->setId(ui->lCariPinjam->text());
+        ui->lblPeminjam->setText(anggota->getData("nama"));
+        if(chekPinjam.value(0).toInt() != 0){
+
+            dialogPinjam = new DataPeminjaman(this,value);
+            dialogPinjam->setModal(true);
+            dialogPinjam->setFocus();
+            dialogPinjam->setFocusPolicy(Qt::StrongFocus);
+            dialogPinjam->setNoAnggota(value);
+            dialogPinjam->show();
+
+        }
+    }else{
+        ui->lblPeminjam->clear();
+    }
+
+    int jumlahData = pinjam->getJumlahResult();
+
+    ui->totalPagePinjam->setText(QString::number(jumlahData));
+
+    setTblPeminjaman();
+}
+
+void Utama::on_actionTentang_Aplikasi_triggered()
+{
+    //About
+    tentang = new About(this);
+    tentang->show();
+}
+
+void Utama::on_pushButton_4_clicked()
+{
+    //GO Search
+    on_lCariPinjam_returnPressed();
+    ui->lCariPinjam->setFocus();
+}
+
+void Utama::on_pushButton_clicked()
+{
+    //Katalog Search
+    QString kolom,status,value;
+    value = ui->lKatalogCari->text();
+    //Combo KOlom
+    switch(ui->catKomboKolom->currentIndex()){
+    case 0:
+        kolom = "kd_buku";
+        break;
+    case 1:
+        kolom = "judul";
+        break;
+    case 2:
+        kolom = "pengarang";
+        break;
+    case 3:
+        kolom = "penerbit";
+        break;
+    default:
+        kolom = "kd_buku";
+    }
+    //Kombo Status
+    status = QString::number(ui->catKomboStatus->currentIndex());
+    katalog->cariKatalog(modelKatalog,kolom,value,status);
+    this->setTblKatalog();
+
+}
+
+void Utama::katEnableButton(){
+    ui->katBPinjam->setEnabled(true);
+    ui->katBHapus->setEnabled(true);
+}
+
+void Utama::on_katBPinjam_clicked()
+{
+    if(ui->tblKatalog->currentIndex().row() >= 0){
+        QString kode_buku = modelKatalog->data(modelKatalog->index(ui->tblKatalog->currentIndex().row(),0)).toString();
+        katalogPinjam = new KatalogPinjam(kode_buku,this);
+        katalogPinjam->show();
+        katalogPinjam->setModal(true);
+    }else{
+        QMessageBox::warning(this,"Pilih Buku Dulu","Pilih Buku Terlebih dahulu untuk melakukan peminjaman");
+    }
+}
+
+void Utama::on_openBarcode_triggered()
+{
+    barcodeWindow = new Barcode(this);
+    barcodeWindow->show();
+}
+
+void Utama::closeEvent(QCloseEvent *event){
+    QMessageBox::StandardButton dialog;
+    dialog = QMessageBox::warning(this, "Keluar aplikasi Libska?",
+                                  "Anda Yakin Keluar aplikasi Libska?",
+                                  QMessageBox::Ok | QMessageBox::Cancel);
+    if( dialog == QMessageBox::Ok) {
+        QSettings userSession("Chip-Project","Libska-User");
+        userSession.remove("USERID");
+        close();
+    } else {
+        event->ignore();
+    }
+}
+
+void Utama::on_katBTambah_clicked()
+{
+    editbuku = new EditBuku(this,"tambah");
+    editbuku->show();
+}
+
+void Utama::on_katBEdit_clicked()
+{
+    if(ui->tblKatalog->currentIndex().row() >= 0){
+
+        QString edit = modelKatalog->data(modelKatalog->index(ui->tblKatalog->currentIndex().row(),0)).toString();
+        editbuku = new EditBuku(this,"edit");
+        editbuku->setKodeEdit(edit);
+        editbuku->show();
+
+    }else{
+
+        QMessageBox::warning(this,"Warning !!!","Pilih buku yang akan di edit terlebih dahulu");
+
+    }
+}
+
+void Utama::on_katBHapus_clicked()
+{
+    if(ui->tblKatalog->currentIndex().row() >= 0){
+
+        QString edit = modelKatalog->data(modelKatalog->index(ui->tblKatalog->currentIndex().row(),0)).toString();
+        editbuku = new EditBuku(this,"hapus");
+        editbuku->setKodeEdit(edit);
+        editbuku->show();
+
+    }else{
+
+        QMessageBox::warning(this,"Warning !!!","Pilih buku yang akan di hapus terlebih dahulu");
+
+    }
+
+}
+
+void Utama::on_actionExport_triggered()
+{
+    exportWindow = new Export();
+    exportWindow->show();
+}
+
+
+void Utama::tblPinjamBottom(int pos){
+    int endPos = ui->tblPeminjaman->verticalScrollBar()->maximum();
+    //qDebug()<<"Pos : "+QString::number(pos);
+    if(pos == endPos){
+        pinjam->appendDataPinjam(QString::number(halamanPinjam));
+        this->setTblPeminjaman();
+        ui->totalPagePinjam->setText(QString::number(model->rowCount()));
+        if(pinjam->getJumlahResult() > 0){
+
+            ui->currentPagePinjam->setText(QString::number(halamanPinjam+1));
+            halamanPinjam++;
+
+        }
+        //qDebug()<<"Akhirrr : "+QString::number(pos);
+    }
+
+}
+
+void Utama::on_actionBuku_Telat_triggered()
+{
+    telatWindow = new BukuTelat(this);
+    telatWindow->show();
+}
+
+void Utama::setStatistik(){
+    statistik = new Statistik();
+    //Buku
+    ui->lBukuTelat->setText(QLocale::system().toString(statistik->getBukuTelat()));
+    ui->statBelumKembali->setText(QLocale::system().toString(statistik->getBukuKembali()));
+    ui->statItemBuku->setText(QLocale::system().toString(statistik->getItemBuku()));
+    ui->statTersedia->setText(QLocale::system().toString(statistik->getBukuTersedia()));
+    ui->statTotalBuku->setText(QLocale::system().toString(statistik->getTotalBuku()));
+    ui->statPeminjaman->setText(QLocale::system().toString(statistik->getTotalPeminjaman()));
+
+    //Peminjaman
+    ui->statPinjamHariIni->setText(QLocale::system().toString(statistik->getPinjamHari()));
+    ui->statPinjamBulanIni->setText(QLocale::system().toString(statistik->getPInjamBulan()));
+    ui->statPinjamTahunIni->setText(QLocale::system().toString(statistik->getPinjamTahun()));
+}
+
+void Utama::on_actionKas_triggered()
+{
+    Kas *kas = new Kas(this);
+    kas->showMaximized();
+}
+
+void Utama::on_actionDaftar_Anggota_triggered()
+{
+    listanggota = new ListAnggota();
+    listanggota->showMaximized();
+}
+
+void Utama::on_actionUser_triggered()
+{
+    Pustakawan *pustWindow = new Pustakawan(this);
+    pustWindow->show();
+}
