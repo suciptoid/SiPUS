@@ -109,6 +109,7 @@ private:
     void setTblPeminjaman();
     void setTblKatalog();
     void setStatistik();
+    void initChart();
     //void closeEvent(QCloseEvent *bar);
 };
 

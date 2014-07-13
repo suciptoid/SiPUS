@@ -19,8 +19,10 @@ Export::~Export()
 
 void Export::on_btnExport_clicked()
 {
+    ui->labelExport->setText("Mohon Tunggu, Sedang Membuat Laporan...");
+
     QFileDialog *dialog = new QFileDialog();
-    QString fileExport = "SiPUS-EXPORT-"+ui->comExport->currentText()+"-"+QDate().currentDate().toString("yyyyMMdd")+".csv";
+    QString fileExport = "SiPUS-Export-"+ui->comExport->currentText()+"-"+QDate().currentDate().toString("yyyyMMdd")+".csv";
     QString pathExport = dialog->getExistingDirectory(this, "Pilih Folder Export",QDir::homePath(),QFileDialog::ShowDirsOnly)+"/"+fileExport;
 
     QSqlQuery query;
@@ -32,6 +34,7 @@ void Export::on_btnExport_clicked()
         if(file.open(QFile::ReadWrite | QFile::Truncate)){
 
             QTextStream stream(&file);
+
 
             QString columsql = "SHOW COLUMNS FROM "+target;
             if(query.exec(columsql)){
@@ -67,11 +70,14 @@ void Export::on_btnExport_clicked()
                     count++;
                 }
                 ui->progresExport->setVisible(false);
+                ui->labelExport->setText("Berhasil membuat laporan sejumlah "+QString::number(count+1)+" baris data.");
             }
             file.close();
         }else{
             qDebug()<<"Failed Open FIle";
         }
+    }else{
+        ui->labelExport->clear();
     }
 
 }
@@ -88,7 +94,7 @@ void Export::on_comExport_currentIndexChanged(int index)
             target = "tbl_buku";
             break;
         case 2:
-            target = "tbl_peminjaman";
+            target = "LAP_PEMINJAMAN";
             break;
         case 3:
             target = "tbl_anggota";
@@ -105,6 +111,6 @@ void Export::on_comExport_currentIndexChanged(int index)
     }
 
     //debug
-    qDebug()<<"Target : "+target;
+    //qDebug()<<"Target : "+target;
 
 }

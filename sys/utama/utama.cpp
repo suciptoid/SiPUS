@@ -20,8 +20,6 @@ Utama::Utama(QWidget *parent) :
     halamanPinjam = 0;
     ui->tblKatalog->verticalScrollBar()->sliderPosition();
     connect(ui->tblPeminjaman->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(tblPinjamBottom(int)));
-    //Shortcut
-    // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q), this, SLOT(close()));
 
     //CONNECT
     connect(ui->tabMain,SIGNAL(currentChanged(int)),this,SLOT(getTableData(int)));
@@ -102,6 +100,9 @@ Utama::Utama(QWidget *parent) :
 
     //Statistik
     this->setStatistik();
+
+    //Init Chart
+    this->initChart();
 
 }
 
@@ -441,4 +442,33 @@ void Utama::on_actionUser_triggered()
 {
     Pustakawan *pustWindow = new Pustakawan(this);
     pustWindow->show();
+}
+
+void Utama::initChart(){
+    //Set Label
+    ui->chart->xAxis->setLabel("Bulan");
+    ui->chart->yAxis->setLabel("Peminjaman");
+    //Enable legend
+    ui->chart->legend->setVisible(true);
+    //Set Range
+    ui->chart->xAxis->setRange(0,30);
+    ui->chart->yAxis->setRange(0,30);
+    //Interaction
+    ui->chart->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
+                                      QCP::iSelectLegend | QCP::iSelectPlottables);
+
+    //example
+    QVector<double> a(30), z(30);
+    for(int i=0;i<30;i++){
+        a[i]=i;
+        z[i]=i/0.5;
+
+        //qDebug()<<"("<<a[i]<<","<<z[i]<<")";
+    }
+    QCPBars *bars1 = new QCPBars(ui->chart->xAxis, ui->chart->yAxis);
+    ui->chart->addPlottable(bars1);
+    bars1->setWidth(9/(double)a.size());
+    bars1->setData(a, z);
+    bars1->setPen(Qt::NoPen);
+    bars1->setBrush(QColor(10, 140, 70, 160));
 }

@@ -9,7 +9,7 @@ CONFIG   += static staticlib
 
 QMAKE_LFLAGS += -Wl,-rpath,\\$\$ORIGIN/lib/:\\$\$ORIGIN/../lib/
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = SiPUS
 TEMPLATE = app
@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     modul/bukutelat/bukutelat.cpp \
     modul/kas/kas.cpp \
     modul/listanggota/listanggota.cpp \
-    modul/pustakawan/pustakawan.cpp
+    modul/pustakawan/pustakawan.cpp \
+    sys/plot/qcustomplot.cpp
 
 HEADERS  += sys/utama/utama.h \
     sys/databaseconfig/databaseconfig.h \
@@ -58,7 +59,8 @@ HEADERS  += sys/utama/utama.h \
     modul/bukutelat/bukutelat.h \
     modul/kas/kas.h \
     modul/listanggota/listanggota.h \
-    modul/pustakawan/pustakawan.h
+    modul/pustakawan/pustakawan.h \
+    sys/plot/qcustomplot.h
 
 FORMS    += sys/utama/utama.ui \
     sys/databaseconfig/databaseconfig.ui \

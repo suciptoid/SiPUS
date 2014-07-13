@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1040</width>
+    <width>1058</width>
     <height>615</height>
    </rect>
   </property>
@@ -33,22 +33,15 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0">
-           <widget class="QGroupBox" name="groupBox_3">
-            <property name="title">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
            <widget class="QGroupBox" name="groupBox">
             <property name="title">
              <string>Statistik Buku</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <layout class="QGridLayout" name="gridLayout_2">
+              <layout class="QGridLayout" name="GridUtama">
                <item row="2" column="0">
                 <widget class="QLabel" name="label_9">
                  <property name="text">
@@ -205,7 +198,7 @@
             </layout>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
              <string>Statistik Peminjaman</string>
@@ -300,14 +293,17 @@
             </layout>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QGroupBox" name="groupBox_4">
-            <property name="title">
-             <string/>
-            </property>
-           </widget>
-          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QCustomPlot" name="chart" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>300</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -730,7 +726,7 @@ font-weight: bold;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1040</width>
+     <width>1058</width>
      <height>20</height>
     </rect>
    </property>
@@ -918,6 +914,14 @@ font-weight: bold;</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>sys/plot/qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>lCariPinjam</tabstop>
   <tabstop>tblPeminjaman</tabstop>
