@@ -34,7 +34,7 @@ private:
     void tataLayout();
     void tataTabel();
     void refreshData();
-
+    void initComboTahun();
     QStandardItemModel *modelKas;
 };
 

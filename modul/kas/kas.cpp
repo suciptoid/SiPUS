@@ -66,6 +66,8 @@ void Kas::tataLayout(){
     //Combo Bulan
     ui->comboBulan->addItems(QStringList()<<"Januari"<<"Pebruari"<<"Maret"<<"April"<<"Mei"<<"Juni"<<"Juli"<<"Agustus"<<"September"<<"Oktober"<<"November"<<"Desember");
     ui->comboBulan->setCurrentIndex(QDate().currentDate().toString("M").toInt()-1);
+    //Combo Tahun
+    this->initComboTahun();
 
     //Atur Layout Tabel Peminjaman
     modelKas = new QStandardItemModel(0,4,this);
@@ -97,8 +99,9 @@ void Kas::refreshData(){
     QString keluar, masuk, saldo;
 
     QString bulan = QString::number(ui->comboBulan->currentIndex()+1);
+    QString tahun = ui->comboTahun->currentText();
 
-    if(query.exec(" SELECT * FROM tbl_kas WHERE MONTH(tgl) = '"+bulan+"' AND YEAR(tgl) = YEAR(NOW())  ")){
+    if(query.exec(" SELECT * FROM tbl_kas WHERE MONTH(tgl) = '"+bulan+"' AND YEAR(tgl) = '"+tahun+"' ")){
         int counter=0;
         while(query.next()){
             modelKas->setItem(counter,0,new QStandardItem(QString(query.value("ket").toString())));
@@ -138,4 +141,20 @@ void Kas::on_bRefresh_clicked()
     modelKas->clear();
     this->refreshData();
     this->tataTabel();
+}
+
+void Kas::initComboTahun(){
+    QSqlQuery querytahun;
+    QString sql = "SELECT DISTINCT YEAR(tgl) FROM tbl_kas WHERE YEAR(tgl) != YEAR(NOW())";
+
+    if( querytahun.exec(sql) ){
+        while(querytahun.next()){
+            ui->comboTahun->addItem(querytahun.value(0).toString());
+        }
+    }else{
+        qDebug()<<"Sql Query Error "<<__FILE__<<__LINE__;
+    }
+    QString curYear = QDate().currentDate().toString("yyyy");
+    ui->comboTahun->addItem(curYear);
+    ui->comboTahun->setCurrentIndex(ui->comboTahun->count()-1);
 }

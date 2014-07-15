@@ -90,6 +90,9 @@
       <widget class="QComboBox" name="comboBulan"/>
      </item>
      <item>
+      <widget class="QComboBox" name="comboTahun"/>
+     </item>
+     <item>
       <widget class="QPushButton" name="bRefresh">
        <property name="text">
         <string>Refresh</string>
