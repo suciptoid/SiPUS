@@ -1,10 +1,18 @@
 #include "barcode.h"
 #include "ui_barcode.h"
+#include <modul/anggota/Anggota.h>
+#include <modul/buku/buku.h>
+#include <modul/peminjaman/peminjaman.h>
 #include <QMessageBox>
+#include <QStandardItemModel>
+#include <QStyle>
+#include <QDesktopWidget>
+#include <QDate>
+#include <QSqlRecord>
 
 Barcode::Barcode(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Barcode)
+    ui(new Ui::Barcode), peminjam(new Anggota), buku(new Buku), peminjaman(new Peminjaman)
 {
     ui->setupUi(this);
     this->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,this->size(),qApp->desktop()->availableGeometry()));
@@ -23,14 +31,14 @@ Barcode::Barcode(QWidget *parent) :
     ui->tblPeminjaman->horizontalHeader()->setStretchLastSection(true);
     ui->tblPeminjaman->setModel(modelPinjam);
     this->setTblBarcodePinjam();
-
-    peminjam = new Anggota();
-    buku = new Buku();
 }
 
 Barcode::~Barcode()
 {
     delete ui;
+		delete peminjam;
+		delete buku;
+		delete peminjaman;
 }
 
 void Barcode::on_lScanAnggota_returnPressed()
@@ -164,11 +172,15 @@ void Barcode::refreshData(){
 
         int counter=0;
         if(queryAnggota.exec("SELECT buku, tgl_tempo FROM tbl_peminjaman WHERE siswa = \""+anggota+"\" AND kembali=\"0\"")){
+						// index column
+						int buku = queryAnggota.record().indexOf("buku");
+						int tgl_tempo = queryAnggota.record().indexOf("tgl_tempo");
+						
             while(queryAnggota.next()){
-                modelPinjam->setItem(counter,0,new QStandardItem(QString(queryAnggota.value("buku").toString())));
-                buku->setKode(queryAnggota.value("buku").toString());
-                modelPinjam->setItem(counter,1,new QStandardItem(QString(buku->getData("judul"))));
-                QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryAnggota.value("tgl_tempo").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+                modelPinjam->setItem(counter,0,new QStandardItem(QString(queryAnggota.value(buku).toString())));
+                this->buku->setKode(queryAnggota.value(buku).toString());
+                modelPinjam->setItem(counter,1,new QStandardItem(QString(this->buku->getData("judul"))));
+                QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryAnggota.value(tgl_tempo).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
                 modelPinjam->setItem(counter,2,new QStandardItem(QString(tglTempo)));
 
                 counter++;

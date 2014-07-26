@@ -2,17 +2,12 @@
 #define KAS_H
 
 #include <QDialog>
-#include <QStandardItemModel>
-#include <QSqlQuery>
-#include <QDate>
-#include <QSqlError>
-#include <QDebug>
-#include <QLocale>
-#include <QMessageBox>
 
 namespace Ui {
 class Kas;
 }
+
+class QStandardItemModel;
 
 class Kas : public QDialog
 {

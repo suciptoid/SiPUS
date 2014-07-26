@@ -1,5 +1,14 @@
 #include <modul/kas/kas.h>
 #include "ui_kas.h"
+#include <QStandardItemModel>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QDate>
+#include <QSqlError>
+#include <QDebug>
+#include <QLocale>
+#include <QMessageBox>
+
 
 Kas::Kas(QWidget *parent) :
     QDialog(parent),
@@ -100,12 +109,20 @@ void Kas::refreshData(){
 
     if(query.exec(" SELECT * FROM tbl_kas WHERE MONTH(tgl) = '"+bulan+"' AND YEAR(tgl) = YEAR(NOW())  ")){
         int counter=0;
+				
+				// index column
+				int ket 		= query.record().indexOf("ket");
+				int tgl_		= query.record().indexOf("tgl");
+				int masuk_	= query.record().indexOf("masuk");
+				int keluar_	= query.record().indexOf("keluar");
+				int saldo_	= query.record().indexOf("saldo");
+				
         while(query.next()){
-            modelKas->setItem(counter,0,new QStandardItem(QString(query.value("ket").toString())));
-            modelKas->setItem(counter,1,new QStandardItem(QString(query.value("tgl").toString())));
-            modelKas->setItem(counter,2,new QStandardItem(QString(query.value("masuk").toString())));
-            modelKas->setItem(counter,3,new QStandardItem(QString(query.value("keluar").toString())));
-            modelKas->setItem(counter,4,new QStandardItem(QString(query.value("saldo").toString())));
+            modelKas->setItem(counter,0,new QStandardItem(QString(query.value(ket).toString())));
+            modelKas->setItem(counter,1,new QStandardItem(QString(query.value(tgl_).toString())));
+            modelKas->setItem(counter,2,new QStandardItem(QString(query.value(masuk_).toString())));
+            modelKas->setItem(counter,3,new QStandardItem(QString(query.value(keluar_).toString())));
+            modelKas->setItem(counter,4,new QStandardItem(QString(query.value(saldo_).toString())));
 
             counter++;
         }

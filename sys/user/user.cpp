@@ -24,7 +24,7 @@ bool User::chekLogin(QString user, QString password){
         if(count==1){
             if(idUser.exec("SELECT id FROM tbl_pustakawan WHERE user=\""+user+"\" AND kunci=\""+hasPwd+"\"")){
                 while (idUser.next()) {
-                    userId = idUser.value("id").toString();
+                    userId = idUser.value(0).toString();
                 }
             }
 

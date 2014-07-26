@@ -3,16 +3,15 @@
 
 #include <QtCore>
 #include <QStandardItemModel>
-#include <modul/buku/buku.h>
-#include <QSqlQuery>
-#include <QSettings>
-#include <QSqlError>
+
+class Buku;
 
 class Peminjaman
 {
 
 public:
     Peminjaman();
+		~Peminjaman();
     QStandardItemModel getDataModel(QString start, QString limit, QObject *parent=0);
     void setModelPeminjaman(QStandardItemModel *theModel);
     void cariPeminjaman(QStandardItemModel *theModel, QString kolom, QString value, QString status, QString hal);

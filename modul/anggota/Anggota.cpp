@@ -1,4 +1,7 @@
 #include <modul/anggota/Anggota.h>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QDebug>
 
 Anggota::Anggota()
 {
@@ -6,18 +9,18 @@ Anggota::Anggota()
     count = 0;
 }
 
-void Anggota::setId(QString idAnggota){
+void Anggota::setId(const QString &idAnggota){
     id = idAnggota;
 }
 
-QString Anggota::getData(QString kolom){
+QString Anggota::getData(const QString &kolom){
     QSqlQuery query;
     QString ret;
 
     if(query.exec("SELECT * FROM tbl_anggota WHERE no_induk = \""+id+"\" ")){
         query.next();
         if(query.size() == 1){
-            ret = query.value(kolom).toString();
+            ret = query.value(query.record().indexOf(kolom)).toString();
             count = query.size();
             error = false;
         }else{

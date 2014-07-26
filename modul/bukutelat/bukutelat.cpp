@@ -1,9 +1,24 @@
 #include <modul/bukutelat/bukutelat.h>
 #include "ui_bukutelat.h"
+#include <QStandardItemModel>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QDate>
+#include <QDebug>
+#include <QSqlError>
+#include <modul/anggota/Anggota.h>
+#include <modul/buku/buku.h>
+#include <QLocale>
+#include <QDesktopWidget>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
+#include <QStandardItem>
+#include <QMessageBox>
 
 BukuTelat::BukuTelat(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::BukuTelat)
+    ui(new Ui::BukuTelat),buku(new Buku),anggota(new Anggota)
 {
     ui->setupUi(this);
     this->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,this->size(),qApp->desktop()->availableGeometry()));
@@ -23,26 +38,31 @@ BukuTelat::BukuTelat(QWidget *parent) :
 
 BukuTelat::~BukuTelat()
 {
+		delete buku;
+		delete anggota;
     delete ui;
 }
 
 void BukuTelat::refreshData(){
-    buku = new Buku();
-    anggota = new Anggota();
-
     QSqlQuery query;
     QString sekarang = QDate().currentDate().toString("yyyy-MM-dd");
     if(query.exec("SELECT * FROM tbl_peminjaman WHERE kembali = '0' AND tgl_tempo < '"+sekarang+"'")){
         statusBar()->showMessage("Jumlah Buku Telat : "+QString::number(query.size()));
         int counter=0;
+				
+				// index column
+				int buku			= query.record().indexOf("buku");
+				int siswa			= query.record().indexOf("siswa");
+				int tgl_tempo = query.record().indexOf("tgl_tempo");
+				
         while(query.next()){
-            buku->setKode(query.value("buku").toString());
-            anggota->setId(query.value("siswa").toString());
+            this->buku->setKode(query.value(buku).toString());
+            anggota->setId(query.value(siswa).toString());
 
-            modelTelat->setItem(counter,0,new QStandardItem(QString(query.value("buku").toString())));
-            modelTelat->setItem(counter,1,new QStandardItem(QString(buku->getData("judul"))));
+            modelTelat->setItem(counter,0,new QStandardItem(QString(query.value(buku).toString())));
+            modelTelat->setItem(counter,1,new QStandardItem(QString(this->buku->getData("judul"))));
             modelTelat->setItem(counter,2,new QStandardItem(QString(anggota->getData("nama"))));
-            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(query.value("tgl_tempo").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(query.value(tgl_tempo).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             modelTelat->setItem(counter,3,new QStandardItem(QString(tglTempo)));
 
             counter++;

@@ -1,9 +1,17 @@
 #include <modul/datapeminjam/datapeminjaman.h>
 #include "ui_datapeminjaman.h"
+#include <modul/anggota/Anggota.h>
+#include <modul/buku/buku.h>
+#include <QSqlRecord>
+#include <QSqlQuery>
+#include <QStandardItemModel>
+#include <QSqlQuery>
+#include <QMessageBox>
+#include <QDate>
 
-DataPeminjaman::DataPeminjaman(QWidget *parent, QString no) :
+DataPeminjaman::DataPeminjaman(QWidget *parent, const QString &no) :
     QDialog(parent),
-    ui(new Ui::DataPeminjaman)
+    ui(new Ui::DataPeminjaman), buku(new Buku)
 {
     //window size
     ui->setupUi(this);
@@ -38,7 +46,9 @@ DataPeminjaman::DataPeminjaman(QWidget *parent, QString no) :
 
 DataPeminjaman::~DataPeminjaman()
 {
+		delete buku;
     delete ui;
+		delete peminjam;
 }
 
 void DataPeminjaman::on_bClose_clicked()
@@ -67,21 +77,26 @@ void DataPeminjaman::setTabel(){
 
 void DataPeminjaman::refreshData(){
     QSqlQuery query;
-    buku = new Buku();
-
     model->clear();
     this->setTabel();
 
     int counter = 0;
     if(query.exec(" SELECT * FROM tbl_peminjaman WHERE siswa=\""+noAnggota+"\" AND kembali=\"0\" ")){
+		
+				// column index
+				int id 				 = query.record().indexOf("id");
+				int buku 			 = query.record().indexOf("buku");
+				int tgl_pinjam = query.record().indexOf("tgl_pinjam");
+				int tgl_tempo  = query.record().indexOf("tgl_tempo");
+				
         while(query.next()){
-            model->setItem(counter,0,new QStandardItem(QString(query.value("id").toString())));
-            model->setItem(counter,1,new QStandardItem(QString(query.value("buku").toString())));
-            buku->setKode(query.value("buku").toString());
-            model->setItem(counter,2,new QStandardItem(QString(buku->getData("judul"))));
-            QString tglPinjam = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(query.value("tgl_pinjam").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            model->setItem(counter,0,new QStandardItem(QString(query.value(id).toString())));
+            model->setItem(counter,1,new QStandardItem(QString(query.value(buku).toString())));
+            this->buku->setKode(query.value(buku).toString());
+            model->setItem(counter,2,new QStandardItem(QString(this->buku->getData("judul"))));
+            QString tglPinjam = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(query.value(tgl_pinjam).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             model->setItem(counter,3,new QStandardItem(QString(tglPinjam)));
-            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(query.value("tgl_tempo").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(query.value(tgl_tempo).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             model->setItem(counter,4,new QStandardItem(QString(tglTempo)));
 
             counter++;
@@ -126,6 +141,7 @@ void DataPeminjaman::on_bKembaliAll_clicked()
     int count=0;
     int countbook=0;
 
+		if(buku != 0) delete buku;
     buku = new Buku();
     buku->bersihkan();
 
@@ -138,14 +154,16 @@ void DataPeminjaman::on_bKembaliAll_clicked()
         if(query.exec("SELECT * FROM tbl_peminjaman WHERE kembali='0' AND siswa = '"+noAnggota+"'")){
             //qDebug()<<"1. Selec peminjaman belum kembali: "+query.lastQuery();
 
-
+						// oolumn index
+						int buku = query.record().indexOf("buku");
+						
             //Update buku satu satu
             while(query.next()){
                 //qDebug()<<"2. Loop jumlah buku "+count;
-                buku->setKode(query.value("buku").toString());
-                QString tersedia = QString::number(buku->getData("tersedia").toInt()+1);
+                this->buku->setKode(query.value(buku).toString());
+                QString tersedia = QString::number(this->buku->getData("tersedia").toInt()+1);
 
-                if(queryAll.exec("UPDATE tbl_buku SET tersedia = '"+tersedia+"' WHERE kd_buku = '"+query.value("buku").toString()+"' ")){
+                if(queryAll.exec("UPDATE tbl_buku SET tersedia = '"+tersedia+"' WHERE kd_buku = '"+query.value(buku).toString()+"' ")){
                     //qDebug()<<"3. Update tbl buku satu persatu dari looping "+countbook;
                     countbook++;
                 }else{

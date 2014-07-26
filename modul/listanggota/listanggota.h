@@ -2,18 +2,12 @@
 #define LISTANGGOTA_H
 
 #include <QDialog>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QMessageBox>
-#include <QDebug>
-#include <QStandardItemModel>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QMessageBox>
 
 namespace Ui {
 class ListAnggota;
 }
+
+class QStandardItemModel;
 
 class ListAnggota : public QDialog
 {
@@ -29,7 +23,7 @@ private slots:
     void on_bAgtSimpan_clicked();
 
     void setTabelAnggota();
-    void refreshData(QString key = "");
+    void refreshData(const QString &key = "");
 
     void on_btnCari_clicked();
 
@@ -37,7 +31,6 @@ private:
     Ui::ListAnggota *ui;
 
     QString noAnggota, namaAnggota, kelasAnggota, jurusanAnggota;
-    QSqlQuery query;
     QStandardItemModel *modelanggota;
 };
 

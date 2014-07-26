@@ -2,13 +2,12 @@
 #define BARCODE_H
 
 #include <QMainWindow>
-#include <modul/anggota/Anggota.h>
-#include <QStandardItemModel>
-#include <modul/buku/buku.h>
-#include <modul/peminjaman/peminjaman.h>
-#include <QStyle>
-#include <QDesktopWidget>
-#include <QDate>
+
+
+class Anggota;
+class Buku;
+class Peminjaman;
+class QStandardItemModel;
 
 namespace Ui {
 class Barcode;

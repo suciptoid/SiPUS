@@ -1,4 +1,5 @@
 #include <modul/buku/buku.h>
+#include <QSqlRecord>
 
 Buku::Buku()
 {
@@ -28,7 +29,7 @@ QString Buku::getData(QString kolom){
 //        qDebug()<<"Buku::getData Where class buku : "+where;
 //        qDebug()<<"Query buku class buku : "+queryBuku.lastQuery();
         if(queryBuku.size() == 1){
-            ret = queryBuku.value(kolom).toString();
+            ret = queryBuku.value(queryBuku.record().indexOf(kolom)).toString();
         }else{
             ret = "";
         }
@@ -43,11 +44,10 @@ QString Buku::getData(QString kolom){
 }
 
 void Buku::bersihkan(){
-    barcode_buku = "";
-    kode_buku = "";
     barcode_buku.clear();
     kode_buku.clear();
 }
+
 int Buku::getResult(){
     return querycount;
 }

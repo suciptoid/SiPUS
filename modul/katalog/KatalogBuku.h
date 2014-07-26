@@ -1,10 +1,9 @@
 #ifndef KATALOGBUKU_H
 #define KATALOGBUKU_H
 
-#include <QStandardItemModel>
-#include <QSqlQuery>
-#include <QDebug>
-#include <QStatusBar>
+#include <QString>
+
+class QStandardItemModel;
 
 class KatalogBuku
 {
@@ -12,7 +11,7 @@ public:
     KatalogBuku();
 
     //Fungsi
-    void cariKatalog(QStandardItemModel *theModel, QString kolom, QString value, QString status);
+    void cariKatalog(QStandardItemModel *theModel, const QString &kolom, const QString &value, const QString &status);
 };
 
 #endif // KATALOGBUKU_H

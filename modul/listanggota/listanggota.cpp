@@ -1,5 +1,14 @@
 #include <modul/listanggota/listanggota.h>
 #include "ui_listanggota.h"
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlError>
+#include <QMessageBox>
+#include <QDebug>
+#include <QStandardItemModel>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMessageBox>
 
 ListAnggota::ListAnggota(QWidget *parent) :
     QDialog(parent),
@@ -32,6 +41,7 @@ void ListAnggota::on_btnAgtBtl_clicked()
 
 void ListAnggota::on_bAgtSimpan_clicked()
 {
+		QSqlQuery query;
     noAnggota = ui->lAgtNo->text();
     namaAnggota = ui->lAgtNama->text().toUpper();
     kelasAnggota = ui->lAgtKelas->text();
@@ -68,19 +78,25 @@ void ListAnggota::setTabelAnggota(){
     ui->tblAnggota->setColumnWidth(4, 1);//Count
 }
 
-void ListAnggota::refreshData(QString key){
+void ListAnggota::refreshData(const QString &key){
     QSqlQuery query;
     QString sql = "SELECT * FROM tbl_anggota WHERE no_induk LIKE \"%"+key+"%\" OR nama LIKE \"%"+key+"%\"";
     int count=0;
     modelanggota->clear();
     this->setTabelAnggota();
     if(query.exec(sql)){
+				// index column
+				int no_induk = query.record().indexOf("no_induk");
+				int nama 		 = query.record().indexOf("nama");
+				int kelas 	 = query.record().indexOf("kelas");
+				int jurusan  = query.record().indexOf("jurusan");
+				int count_ 	 = query.record().indexOf("count");
         while(query.next()){
-            modelanggota->setItem(count,0,new QStandardItem(QString(query.value("no_induk").toString())));
-            modelanggota->setItem(count,1,new QStandardItem(QString(query.value("nama").toString())));
-            modelanggota->setItem(count,2,new QStandardItem(QString(query.value("kelas").toString())));
-            modelanggota->setItem(count,3,new QStandardItem(QString(query.value("jurusan").toString())));
-            modelanggota->setItem(count,4,new QStandardItem(QString(query.value("count").toString())));
+            modelanggota->setItem(count,0,new QStandardItem(QString(query.value(no_induk).toString())));
+            modelanggota->setItem(count,1,new QStandardItem(QString(query.value(nama).toString())));
+            modelanggota->setItem(count,2,new QStandardItem(QString(query.value(kelas).toString())));
+            modelanggota->setItem(count,3,new QStandardItem(QString(query.value(jurusan).toString())));
+            modelanggota->setItem(count,4,new QStandardItem(QString(query.value(count_).toString())));
             count++;
         }
     }
