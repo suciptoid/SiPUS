@@ -2,7 +2,7 @@
 #define DATABASECONFIG_H
 
 #include <QDialog>
-#include <QtSql>
+#include <QSqlDatabase>
 
 namespace Ui {
 class DatabaseConfig;

@@ -85,12 +85,13 @@ void ListAnggota::refreshData(const QString &key){
     modelanggota->clear();
     this->setTabelAnggota();
     if(query.exec(sql)){
-				// index column
-				int no_induk = query.record().indexOf("no_induk");
-				int nama 		 = query.record().indexOf("nama");
-				int kelas 	 = query.record().indexOf("kelas");
-				int jurusan  = query.record().indexOf("jurusan");
-				int count_ 	 = query.record().indexOf("count");
+        // index column
+        int no_induk = query.record().indexOf("no_induk");
+        int nama 		 = query.record().indexOf("nama");
+        int kelas 	 = query.record().indexOf("kelas");
+        int jurusan  = query.record().indexOf("jurusan");
+        int count_ 	 = query.record().indexOf("count");
+
         while(query.next()){
             modelanggota->setItem(count,0,new QStandardItem(QString(query.value(no_induk).toString())));
             modelanggota->setItem(count,1,new QStandardItem(QString(query.value(nama).toString())));

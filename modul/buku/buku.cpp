@@ -1,5 +1,8 @@
 #include <modul/buku/buku.h>
 #include <QSqlRecord>
+#include <QSqlQuery>
+#include <QDebug>
+#include <QSqlError>
 
 Buku::Buku()
 {

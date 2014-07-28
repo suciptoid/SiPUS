@@ -1,6 +1,8 @@
 #include "user.h"
 #include <sys/databaseconfig/databaseconfig.h>
+#include <sys/user/user.h>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QCryptographicHash>
 #include <QDebug>
 
@@ -8,7 +10,7 @@ User::User()
 {
 }
 
-bool User::chekLogin(QString user, QString password){
+bool User::chekLogin(const QString &user, const QString &password){
     QSqlQuery queryLogin, idUser;
     bool ret=false;
     QCryptographicHash hash(QCryptographicHash::Md5);

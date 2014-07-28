@@ -2,9 +2,6 @@
 #define BUKU_H
 
 #include <QString>
-#include <QSqlQuery>
-#include <QDebug>
-#include <QSqlError>
 
 class Buku
 {

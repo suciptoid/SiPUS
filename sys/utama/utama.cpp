@@ -3,15 +3,37 @@
 #include <sys/databaseconfig/databaseconfig.h>
 #include <sys/user/user.h>
 #include <modul/peminjaman/peminjaman.h>
-
+#include <sys/databaseconfig/databaseconfig.h>
+#include <sys/fileconfig/fileconfig.h>
+#include <sys/user/user.h>
+#include <sys/loginwindow/loginwindow.h>
+#include <QStandardItemModel>
+#include <modul/peminjaman/peminjaman.h>
+#include <sys/about/about.h>
+#include <modul/datapeminjam/datapeminjaman.h>
+#include <modul/katalog/KatalogBuku.h>
+#include <modul/katalogpinjam/KatalogPinjam.h>
+#include <modul/barcode/barcode.h>
+#include <modul/editbuku/EditBuku.h>
+#include <sys/export/Export.h>
+#include <modul/bukutelat/bukutelat.h>
+#include <modul/statistik/Statistik.h>
+#include <modul/anggota/Anggota.h>
+#include <modul/kas/kas.h>
+#include <modul/listanggota/listanggota.h>
+#include <modul/pustakawan/pustakawan.h>
+#include <QScrollBar>
+#include <QCloseEvent>
+#include <QSettings>
 #include <QDebug>
 #include <QMessageBox>
 #include <QShortcut>
 #include <QLocale>
+#include <QSqlQuery>
 
 Utama::Utama(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Utama)
+    ui(new Ui::Utama), configWindow(0), loginWindow(0),barcodeWindow(0),telatWindow(0)
 {
     ui->setupUi(this);
     this->showMaximized();
@@ -57,7 +79,7 @@ Utama::Utama(QWidget *parent) :
     //Class Katalog
     katalog = new KatalogBuku();
     //Buat Model Tabel
-    modelKatalog = new QStandardItemModel(2,6);
+    modelKatalog = new QStandardItemModel(2,6, this);
 
     //Set Value Combo Box
     ui->catKomboKolom->addItems(QStringList()<<"Kd. Buku"<<"Judul"<<"Pengarang"<<"Penerbit");
@@ -153,8 +175,11 @@ void Utama::getTableData(int tab){
 //End
 Utama::~Utama()
 {
+    delete pinjam;
+    delete katalog;
+    delete loginWindow;
+    delete configWindow;
     delete ui;
-    configWindow->getDb().close();
 }
 
 
@@ -239,9 +264,11 @@ void Utama::on_lCariPinjam_returnPressed()
         Anggota *anggota = new Anggota();
         anggota->setId(ui->lCariPinjam->text());
         ui->lblPeminjam->setText(anggota->getData("nama"));
+        delete anggota;
         if(chekPinjam.value(0).toInt() != 0){
 
             dialogPinjam = new DataPeminjaman(this,value);
+            dialogPinjam->setAttribute(Qt::WA_DeleteOnClose);
             dialogPinjam->setModal(true);
             dialogPinjam->setFocus();
             dialogPinjam->setFocusPolicy(Qt::StrongFocus);
@@ -264,6 +291,7 @@ void Utama::on_actionTentang_Aplikasi_triggered()
 {
     //About
     tentang = new About(this);
+    tentang->setAttribute(Qt::WA_DeleteOnClose);
     tentang->show();
 }
 
@@ -313,6 +341,7 @@ void Utama::on_katBPinjam_clicked()
     if(ui->tblKatalog->currentIndex().row() >= 0){
         QString kode_buku = modelKatalog->data(modelKatalog->index(ui->tblKatalog->currentIndex().row(),0)).toString();
         katalogPinjam = new KatalogPinjam(kode_buku,this);
+        katalogPinjam->setAttribute(Qt::WA_DeleteOnClose);
         katalogPinjam->show();
         katalogPinjam->setModal(true);
     }else{
@@ -322,7 +351,8 @@ void Utama::on_katBPinjam_clicked()
 
 void Utama::on_openBarcode_triggered()
 {
-    barcodeWindow = new Barcode(this);
+    if(barcodeWindow == 0)
+        barcodeWindow = new Barcode(this);
     barcodeWindow->show();
 }
 
@@ -342,7 +372,8 @@ void Utama::closeEvent(QCloseEvent *event){
 
 void Utama::on_katBTambah_clicked()
 {
-    editbuku = new EditBuku(this,"tambah");
+    EditBuku *editbuku = new EditBuku(this,"tambah");
+    editbuku->setAttribute(Qt::WA_DeleteOnClose);
     editbuku->show();
 }
 
@@ -351,7 +382,8 @@ void Utama::on_katBEdit_clicked()
     if(ui->tblKatalog->currentIndex().row() >= 0){
 
         QString edit = modelKatalog->data(modelKatalog->index(ui->tblKatalog->currentIndex().row(),0)).toString();
-        editbuku = new EditBuku(this,"edit");
+        EditBuku *editbuku = new EditBuku(this,"edit");
+        editbuku->setAttribute(Qt::WA_DeleteOnClose);
         editbuku->setKodeEdit(edit);
         editbuku->show();
 
@@ -367,7 +399,8 @@ void Utama::on_katBHapus_clicked()
     if(ui->tblKatalog->currentIndex().row() >= 0){
 
         QString edit = modelKatalog->data(modelKatalog->index(ui->tblKatalog->currentIndex().row(),0)).toString();
-        editbuku = new EditBuku(this,"hapus");
+        EditBuku *editbuku = new EditBuku(this,"hapus");
+        editbuku->setAttribute(Qt::WA_DeleteOnClose);
         editbuku->setKodeEdit(edit);
         editbuku->show();
 
@@ -381,7 +414,8 @@ void Utama::on_katBHapus_clicked()
 
 void Utama::on_actionExport_triggered()
 {
-    exportWindow = new Export();
+    Export *exportWindow = new Export();
+    exportWindow->setAttribute(Qt::WA_DeleteOnClose);
     exportWindow->show();
 }
 
@@ -406,12 +440,13 @@ void Utama::tblPinjamBottom(int pos){
 
 void Utama::on_actionBuku_Telat_triggered()
 {
-    telatWindow = new BukuTelat(this);
+    if(telatWindow == 0)
+        telatWindow = new BukuTelat(this);
     telatWindow->show();
 }
 
 void Utama::setStatistik(){
-    statistik = new Statistik();
+    Statistik *statistik = new Statistik();
     //Buku
     ui->lBukuTelat->setText(QLocale::system().toString(statistik->getBukuTelat()));
     ui->statBelumKembali->setText(QLocale::system().toString(statistik->getBukuKembali()));
@@ -424,23 +459,28 @@ void Utama::setStatistik(){
     ui->statPinjamHariIni->setText(QLocale::system().toString(statistik->getPinjamHari()));
     ui->statPinjamBulanIni->setText(QLocale::system().toString(statistik->getPInjamBulan()));
     ui->statPinjamTahunIni->setText(QLocale::system().toString(statistik->getPinjamTahun()));
+
+    delete statistik;
 }
 
 void Utama::on_actionKas_triggered()
 {
     Kas *kas = new Kas(this);
+    kas->setAttribute(Qt::WA_DeleteOnClose);
     kas->showMaximized();
 }
 
 void Utama::on_actionDaftar_Anggota_triggered()
 {
-    listanggota = new ListAnggota();
+    ListAnggota *listanggota = new ListAnggota();
+    listanggota->setAttribute(Qt::WA_DeleteOnClose);
     listanggota->showMaximized();
 }
 
 void Utama::on_actionUser_triggered()
 {
     Pustakawan *pustWindow = new Pustakawan(this);
+    pustWindow->setAttribute(Qt::WA_DeleteOnClose);
     pustWindow->show();
 }
 

@@ -8,6 +8,7 @@
 #include <QSqlQuery>
 #include <QMessageBox>
 #include <QDate>
+#include <QDebug>
 
 DataPeminjaman::DataPeminjaman(QWidget *parent, const QString &no) :
     QDialog(parent),

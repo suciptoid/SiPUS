@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <QDate>
 #include <QSettings>
-
+#include <QStandardItemModel>
 
 Peminjaman::Peminjaman()
 {
@@ -15,7 +15,7 @@ Peminjaman::Peminjaman()
 
 Peminjaman::~Peminjaman()
 {
-		delete buku;
+    delete buku;
 }
 
 
@@ -67,7 +67,7 @@ void Peminjaman::setModelPeminjaman(QStandardItemModel *theModel){
 
 }
 
-void Peminjaman::cariPeminjaman(QStandardItemModel *theModel, QString kolom = "siswa", QString value = "", QString status = "", QString hal = "0"){
+void Peminjaman::cariPeminjaman(QStandardItemModel *theModel, const QString &kolom, const QString &value, QString status, const QString &hal){
 
     model = theModel;
     kolomP = kolom;
@@ -86,13 +86,13 @@ void Peminjaman::cariPeminjaman(QStandardItemModel *theModel, QString kolom = "s
 
         int counterPinjam=0;
 				
-				// column index
-				int siswa 			= queryPinjam.record().indexOf("siswa");
-				int buku 				= queryPinjam.record().indexOf("buku");
-				int tgl_pinjam 	= queryPinjam.record().indexOf("tgl_pinjam");
-				int tgl_tempo 	= queryPinjam.record().indexOf("tgl_tempo");
-				int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
-				int kembali 		= queryPinjam.record().indexOf("kembali");
+        // column index
+        int siswa 		= queryPinjam.record().indexOf("siswa");
+        int buku 		= queryPinjam.record().indexOf("buku");
+        int tgl_pinjam 	= queryPinjam.record().indexOf("tgl_pinjam");
+        int tgl_tempo 	= queryPinjam.record().indexOf("tgl_tempo");
+        int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
+        int kembali 	= queryPinjam.record().indexOf("kembali");
 				
         while(queryPinjam.next()){
             theModel->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value(siswa).toString())));
@@ -246,13 +246,13 @@ void Peminjaman::appendDataPinjam(QString hal){
         int counterPinjam=hal.toInt()*50;
         //qDebug()<<"Counter Pinjam : "<<counterPinjam;
 				
-				// volumn index
-				int siswa 			= queryPinjam.record().indexOf("siswa");
-				int buku 				= queryPinjam.record().indexOf("buku");
-				int tgl_pinjam  = queryPinjam.record().indexOf("tgl_pinjam");
-				int tgl_tempo 	= queryPinjam.record().indexOf("tgl_tempo");
-				int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
-				int kembali			= queryPinjam.record().indexOf("kembali");
+        // volumn index
+        int siswa 			= queryPinjam.record().indexOf("siswa");
+        int buku 				= queryPinjam.record().indexOf("buku");
+        int tgl_pinjam  = queryPinjam.record().indexOf("tgl_pinjam");
+        int tgl_tempo 	= queryPinjam.record().indexOf("tgl_tempo");
+        int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
+        int kembali			= queryPinjam.record().indexOf("kembali");
 				
         while(queryPinjam.next()){
             model->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value(siswa).toString())));

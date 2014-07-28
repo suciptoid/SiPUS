@@ -9,6 +9,7 @@
 #include <QDesktopWidget>
 #include <QDate>
 #include <QSqlRecord>
+#include <QSqlQuery>
 
 Barcode::Barcode(QWidget *parent) :
     QMainWindow(parent),

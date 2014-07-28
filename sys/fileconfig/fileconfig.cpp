@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QStringList>
+#include <QTextStream>
 
 FileConfig::FileConfig()
 {

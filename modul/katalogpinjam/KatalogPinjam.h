@@ -2,14 +2,14 @@
 #define KATALOGPINJAM_H
 
 #include <QDialog>
-#include <modul/buku/buku.h>
-#include <modul/anggota/Anggota.h>
-#include <modul/peminjaman/peminjaman.h>
-#include <QMessageBox>
 
 namespace Ui {
 class KatalogPinjam;
 }
+
+class Buku;
+class Anggota;
+class Peminjaman;
 
 class KatalogPinjam : public QDialog
 {

@@ -1,5 +1,9 @@
 #include "modul/pustakawan/pustakawan.h"
 #include "ui_pustakawan.h"
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
+#include <QMessageBox>
 
 Pustakawan::Pustakawan(QWidget *parent) :
     QDialog(parent),
