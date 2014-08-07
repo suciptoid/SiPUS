@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QCryptographicHash>
+#include <QSqlRecord>
 #include <QDebug>
 
 User::User()
@@ -26,12 +27,8 @@ bool User::chekLogin(const QString &user, const QString &password){
         }
 
         if(count==1){
-            if(idUser.exec("SELECT id FROM tbl_pustakawan WHERE user=\""+user+"\" AND kunci=\""+hasPwd+"\"")){
-                while (idUser.next()) {
-                    userId = idUser.value(0).toString();
-                }
-            }
-
+            queryLogin.first();
+            userId = queryLogin.value(queryLogin.record().indexOf("id")).toString();;
             ret = true;
         }else{
             ret = false;
