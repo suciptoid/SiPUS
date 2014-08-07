@@ -29,7 +29,7 @@ void Pustakawan::on_bTambah_clicked()
     query.prepare("INSERT INTO tbl_pustakawan(user, nama, kunci) VALUES(?,?,?)");
     query.bindValue(0, id);
     query.bindValue(1, user);
-    query.bindValue(2, QString::fromAscii(QCryptographicHash::hash(pwd.toAscii(), QCryptographicHash::Md5).toHex()));
+    query.bindValue(2, QString::fromUtf8(QCryptographicHash::hash(pwd.toAscii(), QCryptographicHash::Md5).toHex()));
     if(query.exec()){
         QMessageBox::information(this,"Berhasil","Penambahan User Berhasil");
         ui->lUserId->clear();
