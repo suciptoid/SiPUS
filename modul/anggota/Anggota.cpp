@@ -17,9 +17,11 @@ QString Anggota::getData(const QString &kolom){
     QSqlQuery query;
     QString ret;
 
-    if(query.exec("SELECT * FROM tbl_anggota WHERE no_induk = \""+id+"\" ")){
+    query.prepare("SELECT * FROM tbl_anggota WHERE no_induk = ?");
+    query.bindValue(0, id);
+    if(query.exec()){
         query.next();
-        if(query.size() == 1){
+        if(query.size() == 1){ // not all databases support this method
             ret = query.value(query.record().indexOf(kolom)).toString();
             count = query.size();
             error = false;

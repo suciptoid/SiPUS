@@ -23,11 +23,14 @@ QString Buku::getData(QString kolom){
     QSqlQuery queryBuku;
     QString where, ret;
     if(!kode_buku.isEmpty()){
-        where = "kd_buku = \""+kode_buku+"\" ";
+        queryBuku.prepare("SELECT * FROM tbl_buku WHERE kd_buku = ?");
+        queryBuku.bindValue(0, kode_buku);
     }else if(!barcode_buku.isEmpty()){
         where = "barcode = \""+barcode_buku+"\" ";
+        queryBuku.prepare("SELECT * FROM tbl_buku WHERE barcode = ?");
+        queryBuku.bindValue(0, barcode_buku);
     }
-    if(queryBuku.exec("SELECT * FROM tbl_buku WHERE "+where)){
+    if(queryBuku.exec()){
         queryBuku.next();
 //        qDebug()<<"Buku::getData Where class buku : "+where;
 //        qDebug()<<"Query buku class buku : "+queryBuku.lastQuery();

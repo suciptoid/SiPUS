@@ -30,13 +30,13 @@ void Peminjaman::setModelPeminjaman(QStandardItemModel *theModel){
 
         int counterPinjam=0;
 				
-				// column index
-				int siswa 			= queryPinjam.record().indexOf("siswa");
-				int buku 			  = queryPinjam.record().indexOf("buku");
-				int tgl_pinjam  = queryPinjam.record().indexOf("tgl_pinjam");
-				int tgl_tempo   = queryPinjam.record().indexOf("tgl_tempo");
-				int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
-				int kembali 		= queryPinjam.record().indexOf("kembali");
+        // column index
+        int siswa 			= queryPinjam.record().indexOf("siswa");
+        int buku 			  = queryPinjam.record().indexOf("buku");
+        int tgl_pinjam  = queryPinjam.record().indexOf("tgl_pinjam");
+        int tgl_tempo   = queryPinjam.record().indexOf("tgl_tempo");
+        int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
+        int kembali 		= queryPinjam.record().indexOf("kembali");
 				
         while(queryPinjam.next()){
             theModel->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value(siswa).toString())));

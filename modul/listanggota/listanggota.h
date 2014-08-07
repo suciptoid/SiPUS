@@ -7,7 +7,8 @@ namespace Ui {
 class ListAnggota;
 }
 
-class QStandardItemModel;
+//class QStandardItemModel;
+class QSqlTableModel;
 
 class ListAnggota : public QDialog
 {
@@ -19,19 +20,14 @@ public:
 
 private slots:
     void on_btnAgtBtl_clicked();
-
     void on_bAgtSimpan_clicked();
-
-    void setTabelAnggota();
-    void refreshData(const QString &key = "");
-
     void on_btnCari_clicked();
 
 private:
     Ui::ListAnggota *ui;
 
     QString noAnggota, namaAnggota, kelasAnggota, jurusanAnggota;
-    QStandardItemModel *modelanggota;
+    QSqlTableModel *modelAnggota;
 };
 
 #endif // LISTANGGOTA_H
