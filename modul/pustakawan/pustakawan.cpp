@@ -26,10 +26,10 @@ void Pustakawan::on_bTambah_clicked()
     pwd = ui->lPwd->text();
 
     QSqlQuery query;
-    query.prepare("INSERT INTO tbl_pustakawan(user, nama, kunci) VALUES(?,?,?)");
+    query.prepare("INSERT INTO tbl_pustakawan(user, nama, kunci) VALUES(?,?,MD5(?))");
     query.bindValue(0, id);
     query.bindValue(1, user);
-    query.bindValue(2, QString::fromUtf8(QCryptographicHash::hash(pwd.toAscii(), QCryptographicHash::Md5).toHex()));
+    query.bindValue(2, pwd);
     if(query.exec()){
         QMessageBox::information(this,"Berhasil","Penambahan User Berhasil");
         ui->lUserId->clear();
