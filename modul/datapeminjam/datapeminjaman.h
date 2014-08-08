@@ -2,13 +2,11 @@
 #define DATAPEMINJAMAN_H
 
 #include <QDialog>
-#include <QSqlQuery>
-#include <QStandardItemModel>
-#include <modul/anggota/Anggota.h>
-#include <QSqlQuery>
-#include <modul/buku/buku.h>
-#include <QMessageBox>
-#include <QDate>
+
+
+class Anggota;
+class Buku;
+class QStandardItemModel;
 
 namespace Ui {
 class DataPeminjaman;
@@ -19,7 +17,7 @@ class DataPeminjaman : public QDialog
     Q_OBJECT
 
 public:
-    explicit DataPeminjaman(QWidget *parent = 0, QString no = "0");
+    explicit DataPeminjaman(QWidget *parent = 0, const QString &no = "0");
     void setNoAnggota(QString no);
     ~DataPeminjaman();
 

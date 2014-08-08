@@ -1,15 +1,17 @@
 #include <modul/katalogpinjam/KatalogPinjam.h>
 #include "ui_KatalogPinjam.h"
+#include <modul/buku/buku.h>
+#include <modul/anggota/Anggota.h>
+#include <modul/peminjaman/peminjaman.h>
+#include <QMessageBox>
 
 KatalogPinjam::KatalogPinjam(QString kode, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::KatalogPinjam)
+    ui(new Ui::KatalogPinjam), buku(new Buku), anggota(new Anggota), peminjaman(new Peminjaman)
 {
     ui->setupUi(this);
 
     this->setFixedSize(this->size());
-
-    buku = new Buku();
 
     buku->setKode(kode);
 
@@ -29,6 +31,9 @@ KatalogPinjam::KatalogPinjam(QString kode, QWidget *parent) :
 
 KatalogPinjam::~KatalogPinjam()
 {
+    delete buku;
+    delete anggota;
+    delete peminjaman;
     delete ui;
 }
 
@@ -47,7 +52,6 @@ void KatalogPinjam::on_katBPinjam_clicked()
 
 void KatalogPinjam::on_lineEdit_returnPressed()
 {
-    anggota = new Anggota();
     anggota->setId(ui->lineEdit->text());
 
     ui->katLKelas->setText(anggota->getData("kelas")+" "+anggota->getData("jurusan"));

@@ -2,15 +2,13 @@
 #define ANGGOTA_H
 
 #include <QString>
-#include <QSqlQuery>
-#include <QDebug>
 
 class Anggota
 {
 public:
     Anggota();
-    void setId(QString idAnggota);
-    QString getData(QString kolom);
+    void setId(const QString &idAnggota);
+    QString getData(const QString &kolom);
     bool isError();
     int getCount();
 private:

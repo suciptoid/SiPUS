@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QShortcut>
+#include <QSqlQuery>
+#include <QSqlError>
 
 DatabaseConfig::DatabaseConfig(QWidget *parent) :
     QDialog(parent),

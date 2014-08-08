@@ -1,12 +1,21 @@
 #include <modul/peminjaman/peminjaman.h>
-#include <QStandardItemModel>
+#include <modul/buku/buku.h>
 #include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlError>
 #include <QDebug>
 #include <QDate>
+#include <QSettings>
+#include <QStandardItemModel>
 
 Peminjaman::Peminjaman()
 {
     buku = new Buku();
+}
+
+Peminjaman::~Peminjaman()
+{
+    delete buku;
 }
 
 
@@ -20,18 +29,27 @@ void Peminjaman::setModelPeminjaman(QStandardItemModel *theModel){
         theModel->clear();
 
         int counterPinjam=0;
+				
+        // column index
+        int siswa 			= queryPinjam.record().indexOf("siswa");
+        int buku 			  = queryPinjam.record().indexOf("buku");
+        int tgl_pinjam  = queryPinjam.record().indexOf("tgl_pinjam");
+        int tgl_tempo   = queryPinjam.record().indexOf("tgl_tempo");
+        int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
+        int kembali 		= queryPinjam.record().indexOf("kembali");
+				
         while(queryPinjam.next()){
-            theModel->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value("siswa").toString())));
-            theModel->setItem(counterPinjam,1,new QStandardItem(QString(queryPinjam.value("buku").toString())));
-                buku->setKode(queryPinjam.value("buku").toString());
-                theModel->setItem(counterPinjam,2,new QStandardItem(QString( buku->getData("judul") )));
-            theModel->setItem(counterPinjam,3,new QStandardItem(QString(queryPinjam.value("tgl_pinjam").toString())));
-            theModel->setItem(counterPinjam,4,new QStandardItem(QString(queryPinjam.value("tgl_tempo").toString())));
-            theModel->setItem(counterPinjam,5,new QStandardItem(QString(queryPinjam.value("tgl_kembali").toString())));
+            theModel->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value(siswa).toString())));
+            theModel->setItem(counterPinjam,1,new QStandardItem(QString(queryPinjam.value(buku).toString())));
+                this->buku->setKode(queryPinjam.value(buku).toString());
+                theModel->setItem(counterPinjam,2,new QStandardItem(QString( this->buku->getData("judul") )));
+            theModel->setItem(counterPinjam,3,new QStandardItem(QString(queryPinjam.value(tgl_pinjam).toString())));
+            theModel->setItem(counterPinjam,4,new QStandardItem(QString(queryPinjam.value(tgl_tempo).toString())));
+            theModel->setItem(counterPinjam,5,new QStandardItem(QString(queryPinjam.value(tgl_kembali).toString())));
                 QString status;
-                if(queryPinjam.value("kembali").toString() == "1"){
+                if(queryPinjam.value(kembali).toString() == "1"){
                     status = "Sudah Kembali";
-                }else if(queryPinjam.value("kembali").toString() == "0"){
+                }else if(queryPinjam.value(kembali).toString() == "0"){
                     status = "Belum Kembali";
                 }
             theModel->setItem(counterPinjam,6,new QStandardItem(QString(status)));
@@ -49,7 +67,7 @@ void Peminjaman::setModelPeminjaman(QStandardItemModel *theModel){
 
 }
 
-void Peminjaman::cariPeminjaman(QStandardItemModel *theModel, QString kolom = "siswa", QString value = "", QString status = "", QString hal = "0"){
+void Peminjaman::cariPeminjaman(QStandardItemModel *theModel, const QString &kolom, const QString &value, QString status, const QString &hal){
 
     model = theModel;
     kolomP = kolom;
@@ -67,21 +85,30 @@ void Peminjaman::cariPeminjaman(QStandardItemModel *theModel, QString kolom = "s
         theModel->clear();
 
         int counterPinjam=0;
+				
+        // column index
+        int siswa 		= queryPinjam.record().indexOf("siswa");
+        int buku 		= queryPinjam.record().indexOf("buku");
+        int tgl_pinjam 	= queryPinjam.record().indexOf("tgl_pinjam");
+        int tgl_tempo 	= queryPinjam.record().indexOf("tgl_tempo");
+        int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
+        int kembali 	= queryPinjam.record().indexOf("kembali");
+				
         while(queryPinjam.next()){
-            theModel->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value("siswa").toString())));
-            theModel->setItem(counterPinjam,1,new QStandardItem(QString(queryPinjam.value("buku").toString())));
-            buku->setKode(queryPinjam.value("buku").toString());
-            theModel->setItem(counterPinjam,2,new QStandardItem(QString( buku->getData("judul") )));
-            QString tglPinjam = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value("tgl_pinjam").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            theModel->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value(siswa).toString())));
+            theModel->setItem(counterPinjam,1,new QStandardItem(QString(queryPinjam.value(buku).toString())));
+            this->buku->setKode(queryPinjam.value(buku).toString());
+            theModel->setItem(counterPinjam,2,new QStandardItem(QString( this->buku->getData("judul") )));
+            QString tglPinjam = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value(tgl_pinjam).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             theModel->setItem(counterPinjam,3,new QStandardItem(QString(tglPinjam)));
-            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value("tgl_tempo").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value(tgl_tempo).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             theModel->setItem(counterPinjam,4,new QStandardItem(QString(tglTempo)));
-            QString tglKembali = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value("tgl_kembali").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            QString tglKembali = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value(tgl_kembali).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             theModel->setItem(counterPinjam,5,new QStandardItem(QString(tglKembali)));
                 QString status;
-                if(queryPinjam.value("kembali").toString() == "1"){
+                if(queryPinjam.value(kembali).toString() == "1"){
                     status = "Sudah Kembali";
-                }else if(queryPinjam.value("kembali").toString() == "0"){
+                }else if(queryPinjam.value(kembali).toString() == "0"){
                     status = "Belum Kembali";
                 }
             theModel->setItem(counterPinjam,6,new QStandardItem(QString(status)));
@@ -114,7 +141,7 @@ bool Peminjaman::pinjamBuku(QString peminjam, QString kdbuku){
 
     QString countTersedia = "0";
     if(querybuku.size() != 0){
-        countTersedia = querybuku.value("tersedia").toString();
+        countTersedia = querybuku.value(querybuku.record().indexOf("tersedia")).toString();
     }else{
         //messagePinjam = "Buku tersedia";
     }
@@ -132,9 +159,9 @@ bool Peminjaman::pinjamBuku(QString peminjam, QString kdbuku){
             querybuku.clear();
             if(querybuku.exec("SELECT * FROM tbl_buku WHERE kd_buku = \""+kdbuku+"\" ")){
                 querybuku.next();
-                QString tersedia = querybuku.value("tersedia").toString();
+                QString tersedia = querybuku.value(querybuku.record().indexOf("tersedia")).toString();
                 int newTersedia = tersedia.toInt() - 1;
-                int newCount = querybuku.value("count").toInt() + 1;
+                int newCount = querybuku.value(querybuku.record().indexOf("count")).toInt() + 1;
 
                 if(querybuku.size() == 1){
                     querybuku.clear();
@@ -143,7 +170,7 @@ bool Peminjaman::pinjamBuku(QString peminjam, QString kdbuku){
                         querySiswa.exec("SELECT * FROM tbl_anggota WHERE no_induk = \""+peminjam+"\" ");
                         querySiswa.next();
 
-                        int newCountSiswa = querySiswa.value("count").toInt() + 1;
+                        int newCountSiswa = querySiswa.value(querybuku.record().indexOf("tersedia")).toInt() + 1;
                         querybuku.clear();
                         if(querybuku.exec("UPDATE tbl_anggota SET count = \""+QString::number(newCountSiswa)+"\" WHERE no_induk = \""+peminjam+"\" ")){
 
@@ -218,21 +245,30 @@ void Peminjaman::appendDataPinjam(QString hal){
         //qDebug()<<"Append Query: "+queryPinjam.lastQuery();
         int counterPinjam=hal.toInt()*50;
         //qDebug()<<"Counter Pinjam : "<<counterPinjam;
+				
+        // volumn index
+        int siswa 			= queryPinjam.record().indexOf("siswa");
+        int buku 				= queryPinjam.record().indexOf("buku");
+        int tgl_pinjam  = queryPinjam.record().indexOf("tgl_pinjam");
+        int tgl_tempo 	= queryPinjam.record().indexOf("tgl_tempo");
+        int tgl_kembali = queryPinjam.record().indexOf("tgl_kembali");
+        int kembali			= queryPinjam.record().indexOf("kembali");
+				
         while(queryPinjam.next()){
-            model->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value("siswa").toString())));
-            model->setItem(counterPinjam,1,new QStandardItem(QString(queryPinjam.value("buku").toString())));
-            buku->setKode(queryPinjam.value("buku").toString());
-            model->setItem(counterPinjam,2,new QStandardItem(QString( buku->getData("judul") )));
-            QString tglPinjam = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value("tgl_pinjam").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            model->setItem(counterPinjam,0,new QStandardItem(QString(queryPinjam.value(siswa).toString())));
+            model->setItem(counterPinjam,1,new QStandardItem(QString(queryPinjam.value(buku).toString())));
+            this->buku->setKode(queryPinjam.value(buku).toString());
+            model->setItem(counterPinjam,2,new QStandardItem(QString( this->buku->getData("judul") )));
+            QString tglPinjam = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value(tgl_pinjam).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             model->setItem(counterPinjam,3,new QStandardItem(QString(tglPinjam)));
-            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value("tgl_tempo").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            QString tglTempo = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value(tgl_tempo).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             model->setItem(counterPinjam,4,new QStandardItem(QString(tglTempo)));
-            QString tglKembali = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value("tgl_kembali").toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
+            QString tglKembali = QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate::fromString(queryPinjam.value(tgl_kembali).toString(),"yyyy-MM-dd"),"dd MMMM yyyy");
             model->setItem(counterPinjam,5,new QStandardItem(QString(tglKembali)));
                 QString status;
-                if(queryPinjam.value("kembali").toString() == "1"){
+                if(queryPinjam.value(kembali).toString() == "1"){
                     status = "Sudah Kembali";
-                }else if(queryPinjam.value("kembali").toString() == "0"){
+                }else if(queryPinjam.value(kembali).toString() == "0"){
                     status = "Belum Kembali";
                 }
             model->setItem(counterPinjam,6,new QStandardItem(QString(status)));

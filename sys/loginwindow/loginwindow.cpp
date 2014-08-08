@@ -2,6 +2,7 @@
 #include "ui_loginwindow.h"
 #include <sys/user/user.h>
 #include <QMessageBox>
+#include <QSettings>
 
 LoginWindow::LoginWindow(QWidget *parent) :
     QDialog(parent),

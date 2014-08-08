@@ -2,10 +2,6 @@
 #define PUSTAKAWAN_H
 
 #include <QDialog>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
-#include <QMessageBox>
 
 namespace Ui {
 class Pustakawan;

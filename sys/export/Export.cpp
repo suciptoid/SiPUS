@@ -1,12 +1,18 @@
 #include <sys/export/Export.h>
 #include "ui_Export.h"
+#include <QFileDialog>
+#include <QSqlQuery>
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
+#include <QDate>
+#include <QDebug>
 
 Export::Export(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Export)
 {
     ui->setupUi(this);
-    dialog = new QFileDialog();
 
     ui->comExport->addItems(QStringList()<<"Pilih Data"<<"Buku"<<"Peminjaman"<<"Daftar Anggota"<<"Kas");
     ui->progresExport->setVisible(false);
@@ -21,9 +27,8 @@ void Export::on_btnExport_clicked()
 {
     ui->labelExport->setText("Mohon Tunggu, Sedang Membuat Laporan...");
 
-    QFileDialog *dialog = new QFileDialog();
     QString fileExport = "SiPUS-Export-"+ui->comExport->currentText()+"-"+QDate().currentDate().toString("yyyyMMdd")+".csv";
-    QString pathExport = dialog->getExistingDirectory(this, "Pilih Folder Export",QDir::homePath(),QFileDialog::ShowDirsOnly)+"/"+fileExport;
+    QString pathExport = QFileDialog::getExistingDirectory(this, "Pilih Folder Export",QDir::homePath(),QFileDialog::ShowDirsOnly)+"/"+fileExport;
 
     QSqlQuery query;
 

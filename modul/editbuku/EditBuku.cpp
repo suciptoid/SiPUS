@@ -1,9 +1,14 @@
 #include <modul/editbuku/EditBuku.h>
 #include "ui_EditBuku.h"
+#include <QDesktopWidget>
+#include <modul/buku/buku.h>
+#include <QMessageBox>
+#include <QSqlQuery>
+#include <QDebug>
 
-EditBuku::EditBuku(QWidget *parent, QString mode) :
+EditBuku::EditBuku(QWidget *parent, const QString &mode) :
     QMainWindow(parent),
-    ui(new Ui::EditBuku)
+    ui(new Ui::EditBuku), buku(new Buku)
 {
     ui->setupUi(this);
     this->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,this->size(),qApp->desktop()->availableGeometry()));
@@ -44,12 +49,13 @@ EditBuku::EditBuku(QWidget *parent, QString mode) :
 
 EditBuku::~EditBuku()
 {
+    delete buku;
     delete ui;
 }
 
 void EditBuku::on_bEditTambah_clicked()
 {
-    buku = new Buku();
+    buku->bersihkan();
     buku->setKode(ui->lKdBuku->text());
 
     if( !ui->lKdBuku->text().isEmpty() ){
@@ -106,7 +112,7 @@ void EditBuku::on_bEditTambah_clicked()
 
 void EditBuku::on_bEditSimpan_clicked()
 {
-    buku = new Buku();
+    buku->bersihkan();
     buku->setKode(kodeEdit);
 
     if( !ui->lKdBuku->text().isEmpty() ){ //Kode buku tidak kosong
@@ -153,7 +159,7 @@ void EditBuku::on_bEditSimpan_clicked()
 void EditBuku::setKodeEdit(QString kode){
     kodeEdit = kode;
 
-    buku = new Buku();
+    buku->bersihkan();
     buku->setKode(kodeEdit);
 
     ui->lKdBuku->setText(buku->getData("kd_buku"));
@@ -170,7 +176,7 @@ void EditBuku::setKodeEdit(QString kode){
 
 void EditBuku::on_bEditHapus_clicked()
 {
-    buku = new Buku();
+    buku->bersihkan();
     buku->setKode(kodeEdit);
 
     if( !ui->lKdBuku->text().isEmpty() ){ //Kode buku tidak kosong

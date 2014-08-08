@@ -2,12 +2,12 @@
 #define LOGINWINDOW_H
 
 #include <QDialog>
-#include <sys/user/user.h>
-#include <QSettings>
 
 namespace Ui {
 class LoginWindow;
 }
+
+class User;
 
 class LoginWindow : public QDialog
 {

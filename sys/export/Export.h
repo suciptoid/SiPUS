@@ -2,13 +2,7 @@
 #define EXPORT_H
 
 #include <QDialog>
-#include <QFileDialog>
-#include <QSqlQuery>
-#include <QFile>
-#include <QTextStream>
-#include <QFileDialog>
-#include <QDate>
-#include <QDebug>
+
 
 namespace Ui {
 class Export;
@@ -30,7 +24,6 @@ private slots:
 
 private:
     Ui::Export *ui;
-    QFileDialog *dialog;
     QString target;
 };
 
