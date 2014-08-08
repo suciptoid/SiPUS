@@ -1,5 +1,10 @@
 #include "modul/pustakawan/pustakawan.h"
 #include "ui_pustakawan.h"
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
+#include <QMessageBox>
+#include <QCryptographicHash>
 
 Pustakawan::Pustakawan(QWidget *parent) :
     QDialog(parent),
@@ -21,7 +26,11 @@ void Pustakawan::on_bTambah_clicked()
     pwd = ui->lPwd->text();
 
     QSqlQuery query;
-    if(query.exec("INSERT INTO tbl_pustakawan SET user = '"+id+"', nama = '"+user+"', kunci =MD5('"+id+"') ")){
+    query.prepare("INSERT INTO tbl_pustakawan(user, nama, kunci) VALUES(?,?,?)");
+    query.bindValue(0, id);
+    query.bindValue(1, user);
+    query.bindValue(2, QString::fromUtf8(QCryptographicHash::hash(pwd.toAscii(), QCryptographicHash::Md5).toHex()));
+    if(query.exec()){
         QMessageBox::information(this,"Berhasil","Penambahan User Berhasil");
         ui->lUserId->clear();
         ui->lNama->clear();

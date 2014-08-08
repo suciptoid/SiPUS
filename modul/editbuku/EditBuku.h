@@ -2,20 +2,19 @@
 #define EDITBUKU_H
 
 #include <QMainWindow>
-#include <QDesktopWidget>
-#include <modul/buku/buku.h>
-#include <QMessageBox>
 
 namespace Ui {
 class EditBuku;
 }
+
+class Buku;
 
 class EditBuku : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit EditBuku(QWidget *parent = 0, QString mode = "tambah");
+    explicit EditBuku(QWidget *parent = 0, const QString &mode = "tambah");
     void setKodeEdit(QString kode);
     ~EditBuku();
 

@@ -2,23 +2,19 @@
 #define USER_H
 
 #include <QString>
-#include <QCryptographicHash>
-#include <sys/user/user.h>
-#include <sys/databaseconfig/databaseconfig.h>
+
+class DatabaseConfig;
 
 class User
 {
 public:
     User();
     ~User();
-    bool chekLogin(QString user, QString password);
+    bool chekLogin(const QString &user, const QString &password);
     QString getId();
 private:
     DatabaseConfig *dbCon;
     QString userId;
-
-
-
 };
 
 #endif // USER_H

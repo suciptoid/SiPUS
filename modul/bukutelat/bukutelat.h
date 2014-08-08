@@ -2,20 +2,10 @@
 #define BUKUTELAT_H
 
 #include <QMainWindow>
-#include <QStandardItemModel>
-#include <QSqlQuery>
-#include <QDate>
-#include <QDebug>
-#include <QSqlError>
-#include <modul/anggota/Anggota.h>
-#include <modul/buku/buku.h>
-#include <QLocale>
-#include <QDesktopWidget>
-#include <QFileDialog>
-#include <QFile>
-#include <QTextStream>
-#include <QStandardItem>
-#include <QMessageBox>
+
+class QStandardItemModel;
+class Buku;
+class Anggota;
 
 namespace Ui {
 class BukuTelat;

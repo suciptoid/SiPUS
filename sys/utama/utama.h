@@ -2,32 +2,28 @@
 #define UTAMA_H
 
 #include <QMainWindow>
-#include <sys/databaseconfig/databaseconfig.h>
-#include <sys/fileconfig/fileconfig.h>
-#include <sys/user/user.h>
-#include <sys/loginwindow/loginwindow.h>
-#include <QStandardItemModel>
-#include <modul/peminjaman/peminjaman.h>
-#include <sys/about/about.h>
-#include <modul/datapeminjam/datapeminjaman.h>
-#include <modul/katalog/KatalogBuku.h>
-#include <modul/katalogpinjam/KatalogPinjam.h>
-#include <modul/barcode/barcode.h>
-#include <QCloseEvent>
-#include <QSettings>
-#include <modul/editbuku/EditBuku.h>
-#include <sys/export/Export.h>
-#include <QScrollBar>
-#include <modul/bukutelat/bukutelat.h>
-#include <modul/statistik/Statistik.h>
-#include <modul/anggota/Anggota.h>
-#include <modul/kas/kas.h>
-#include <modul/listanggota/listanggota.h>
-#include <modul/pustakawan/pustakawan.h>
 
 namespace Ui {
 class Utama;
 }
+
+class DatabaseConfig;
+class FileConfig;
+class User;
+class LoginWindow;
+class QStandardItemModel;
+class Statistik;
+class Peminjaman;
+class About;
+class DataPeminjaman;
+class KatalogBuku;
+class KatalogPinjam;
+class Barcode;
+class EditBuku;
+class Export;
+class BukuTelat;
+class ListAnggota;
+class QCloseEvent;
 
 class Utama : public QMainWindow
 {
@@ -92,7 +88,6 @@ private:
 
     QStandardItemModel *model;
     QStandardItemModel *modelKatalog;
-    Statistik *statistik;
 
     Peminjaman *pinjam;
     About *tentang;
@@ -100,10 +95,7 @@ private:
     KatalogBuku *katalog;
     KatalogPinjam *katalogPinjam;
     Barcode *barcodeWindow;
-    EditBuku *editbuku;
-    Export *exportWindow;
     BukuTelat *telatWindow;
-    ListAnggota *listanggota;
 
     //Function
     void setTblPeminjaman();

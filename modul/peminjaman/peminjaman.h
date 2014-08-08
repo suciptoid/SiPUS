@@ -2,20 +2,19 @@
 #define PEMINJAMAN_H
 
 #include <QtCore>
-#include <QStandardItemModel>
-#include <modul/buku/buku.h>
-#include <QSqlQuery>
-#include <QSettings>
-#include <QSqlError>
+
+class Buku;
+class QStandardItemModel;
 
 class Peminjaman
 {
 
 public:
     Peminjaman();
-    QStandardItemModel getDataModel(QString start, QString limit, QObject *parent=0);
+    ~Peminjaman();
+//    QStandardItemModel getDataModel(QString start, QString limit, QObject *parent=0);
     void setModelPeminjaman(QStandardItemModel *theModel);
-    void cariPeminjaman(QStandardItemModel *theModel, QString kolom, QString value, QString status, QString hal);
+    void cariPeminjaman(QStandardItemModel *theModel, const QString &kolom = "siswa", const QString &value = "", QString status = "", const QString &hal = "0");
     void appendDataPinjam(QString hal);
     int getJumlahData();
     int getJumlahResult();

@@ -2,7 +2,6 @@
 #define FILECONFIG_H
 
 #include <QString>
-#include <QTextStream>
 
 class FileConfig
 {
