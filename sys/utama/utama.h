@@ -7,7 +7,6 @@ namespace Ui {
 class Utama;
 }
 
-class DatabaseConfig;
 class FileConfig;
 class User;
 class LoginWindow;
@@ -24,13 +23,14 @@ class Export;
 class BukuTelat;
 class ListAnggota;
 class QCloseEvent;
+class LoginWindow;
 
 class Utama : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit Utama(QWidget *parent = 0);
+    explicit Utama(LoginWindow *lg, QWidget *parent = 0);
     ~Utama();
 protected:
     void closeEvent(QCloseEvent *event);
@@ -40,8 +40,6 @@ public slots:
 
 private slots:
     void on_actionKeluar_triggered();
-
-    void on_actionKonfigurasi_DB_triggered();
 
     void on_lCariPinjam_returnPressed();
 
@@ -76,12 +74,14 @@ private slots:
 
     void on_actionUser_triggered();
 
+    void on_actionLogout_triggered();
+
 private:
     Ui::Utama *ui;
     bool connected;
+    bool logout;
     int halamanPinjam;
     QString userId;
-    DatabaseConfig *configWindow;
     FileConfig *config;
     User *userLogin;
     LoginWindow *loginWindow;

@@ -14,7 +14,7 @@
    <string>Konfigurasi Database</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="glypticon.qrc">
+   <iconset resource="../../glypticon.qrc">
     <normaloff>:/glypticon/glyphicons_136_cogwheel.png</normaloff>:/glypticon/glyphicons_136_cogwheel.png</iconset>
   </property>
   <property name="styleSheet">
@@ -159,7 +159,7 @@
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Simpan</string>
+       <string>Konek</string>
       </property>
      </widget>
     </item>
@@ -241,6 +241,7 @@ color: green;</string>
     <string>Pengaturan Koneksi Database MySQL</string>
    </property>
   </widget>
+  <zorder>layoutWidget1</zorder>
   <zorder>lHost</zorder>
   <zorder>lUser</zorder>
   <zorder>lPass</zorder>
@@ -248,7 +249,6 @@ color: green;</string>
   <zorder>label_2</zorder>
   <zorder>label_3</zorder>
   <zorder>label_5</zorder>
-  <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>lDatabase</zorder>
   <zorder>label_7</zorder>
@@ -266,7 +266,7 @@ color: green;</string>
   <tabstop>pushButton_2</tabstop>
  </tabstops>
  <resources>
-  <include location="glypticon.qrc"/>
+  <include location="../../glypticon.qrc"/>
  </resources>
  <connections/>
 </ui>

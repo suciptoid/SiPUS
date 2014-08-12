@@ -9,10 +9,11 @@
 #include <QShortcut>
 #include <QSqlQuery>
 #include <QSqlError>
+#include "sys/loginwindow/loginwindow.h"
 
 DatabaseConfig::DatabaseConfig(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DatabaseConfig)
+    ui(new Ui::DatabaseConfig), loginWindow(new LoginWindow)
 {
     ui->setupUi(this);
     //Shortcut
@@ -26,10 +27,23 @@ DatabaseConfig::DatabaseConfig(QWidget *parent) :
 
     //Baca COnfig
     ReadConfig();
+
+    if(isDbConnect()) {
+        loginWindow->show();
+    } else {
+        QMessageBox::critical(this, "Gagal terkoneksi ke databaes", db.lastError().text());
+        show();
+    }
 }
 
 DatabaseConfig::~DatabaseConfig()
 {
+    qDebug() << this << "destroyed";
+    qDebug() << "loginWindow: " << loginWindow.isNull();
+    if(!loginWindow.isNull()) {
+        LoginWindow *lw = loginWindow.data();
+        delete lw;
+    }
     delete ui;
 }
 
@@ -104,7 +118,13 @@ QString DatabaseConfig::getError(){
 void DatabaseConfig::on_pSimpan_clicked()
 {
     simpanSetting();
-    QMessageBox::information(this,"Simpan","Berhasil Disimpan !!");
+//    QMessageBox::information(this,"Simpan","Berhasil Disimpan !!");
+    if(isDbConnect()) {
+        loginWindow->show();
+        hide();
+    } else {
+        QMessageBox::critical(this, "Gagal terkoneksi ke databaes", getDb().lastError().text());
+    }
 }
 
 void DatabaseConfig::simpanSetting(){
