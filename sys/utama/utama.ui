@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1058</width>
-    <height>615</height>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -748,7 +748,13 @@ font-weight: bold;</string>
     <addaction name="separator"/>
     <addaction name="actionTentang_Aplikasi"/>
    </widget>
+   <widget class="QMenu" name="menuSekolah">
+    <property name="title">
+     <string>Sekolah</string>
+    </property>
+   </widget>
    <addaction name="menuMenu"/>
+   <addaction name="menuSekolah"/>
    <addaction name="menuTentang"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

@@ -38,6 +38,10 @@ Utama::Utama(QWidget *parent) :
     ui->setupUi(this);
     this->showMaximized();
     this->setWindowTitle("SiPUS | "+ QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate().currentDate(),"dd MMMM yyyy") );
+
+    //disable chart temporary
+    ui->chart->hide();
+
     ui->tabMain->setCurrentIndex(0);
     halamanPinjam = 0;
     ui->tblKatalog->verticalScrollBar()->sliderPosition();
@@ -70,8 +74,6 @@ Utama::Utama(QWidget *parent) :
             ui->mainToolBar->setDisabled(true);
             //Munculkan Login Form
             loginWindow->show();
-
-            //Peminjaman
 
         }
     }
