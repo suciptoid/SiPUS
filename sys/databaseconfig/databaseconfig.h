@@ -3,10 +3,13 @@
 
 #include <QDialog>
 #include <QSqlDatabase>
+#include <QPointer>
 
 namespace Ui {
 class DatabaseConfig;
 }
+
+class LoginWindow;
 
 class DatabaseConfig : public QDialog
 {
@@ -35,6 +38,7 @@ private:
     void ReadConfig();
     void simpanSetting();
     //FileConfig *config;
+    QPointer<LoginWindow> loginWindow;
 };
 
 #endif // DATABASECONFIG_H

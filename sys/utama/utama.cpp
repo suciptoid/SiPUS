@@ -31,12 +31,12 @@
 #include <QLocale>
 #include <QSqlQuery>
 
-Utama::Utama(QWidget *parent) :
+Utama::Utama(LoginWindow *lg, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Utama), configWindow(0), loginWindow(0),barcodeWindow(0),telatWindow(0)
+    ui(new Ui::Utama), logout(false), loginWindow(lg),barcodeWindow(0),telatWindow(0)
 {
     ui->setupUi(this);
-    this->showMaximized();
+//    this->showMaximized();
     this->setWindowTitle("SiPUS | "+ QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate().currentDate(),"dd MMMM yyyy") );
     ui->tabMain->setCurrentIndex(0);
     halamanPinjam = 0;
@@ -47,34 +47,6 @@ Utama::Utama(QWidget *parent) :
     connect(ui->tabMain,SIGNAL(currentChanged(int)),this,SLOT(getTableData(int)));
     //connect(ui->tblKatalog,SIGNAL(entered(QModelIndex)),this,SLOT(katEnableButton()));
 
-    //Inisialisasi Window DB
-    configWindow = new DatabaseConfig(this);
-    configWindow->setFixedSize(configWindow->size());
-
-    //Chek Db Connected
-    if(!configWindow->isDbConnect()){
-
-        configWindow->show();
-        this->centralWidget()->setDisabled(true);
-        ui->mainToolBar->setDisabled(true);
-        QMessageBox::critical(configWindow,"Error : Koneksi Database","Gagal Menghubungi pusat data. Mohon Periksa Kembail !\n\n"+configWindow->getError());
-
-    }else{
-        //Menghubungkan Database
-        configWindow->getDb().open();
-        //Chek Login
-        loginWindow = new LoginWindow(this);
-        if(userId.isEmpty() || userId.isNull()){
-            //Matikan Menu Utama
-            this->centralWidget()->setDisabled(true);
-            ui->mainToolBar->setDisabled(true);
-            //Munculkan Login Form
-            loginWindow->show();
-
-            //Peminjaman
-
-        }
-    }
     //********************************************* KATALOG *********************************************//
     //Class Katalog
     katalog = new KatalogBuku();
@@ -125,17 +97,13 @@ Utama::Utama(QWidget *parent) :
 
     //Init Chart
     this->initChart();
+    setAttribute(Qt::WA_DeleteOnClose);
 
 }
 
 void Utama::on_actionKeluar_triggered()
 {
     this->close();
-}
-
-void Utama::on_actionKonfigurasi_DB_triggered()
-{
-    configWindow->show();
 }
 
 void Utama::unLock(){
@@ -175,10 +143,9 @@ void Utama::getTableData(int tab){
 //End
 Utama::~Utama()
 {
+    qDebug() << this << "destroyed!";
     delete pinjam;
     delete katalog;
-    delete loginWindow;
-    delete configWindow;
     delete ui;
 }
 
@@ -357,6 +324,12 @@ void Utama::on_openBarcode_triggered()
 }
 
 void Utama::closeEvent(QCloseEvent *event){
+    if(logout) {
+        loginWindow->show();
+        event->accept();
+        return;
+    }
+
     QMessageBox::StandardButton dialog;
     dialog = QMessageBox::warning(this, "Keluar aplikasi Libska?",
                                   "Anda Yakin Keluar aplikasi Libska?",
@@ -511,4 +484,10 @@ void Utama::initChart(){
     bars1->setData(a, z);
     bars1->setPen(Qt::NoPen);
     bars1->setBrush(QColor(10, 140, 70, 160));
+}
+
+void Utama::on_actionLogout_triggered()
+{
+    logout = true;
+    close();
 }
