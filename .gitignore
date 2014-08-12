@@ -13,6 +13,9 @@
 *.dll
 *.dylib
 
+#Git merge
+*.orig
+
 # Qt-es
 
 /.qmake.cache
