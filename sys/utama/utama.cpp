@@ -36,12 +36,15 @@ Utama::Utama(LoginWindow *lg, QWidget *parent) :
     ui(new Ui::Utama), logout(false), loginWindow(lg),barcodeWindow(0),telatWindow(0)
 {
     ui->setupUi(this);
-//    this->showMaximized();
+    this->showMaximized();
     this->setWindowTitle("SiPUS | "+ QLocale(QLocale::Indonesian,QLocale::Indonesia).toString(QDate().currentDate(),"dd MMMM yyyy") );
     ui->tabMain->setCurrentIndex(0);
     halamanPinjam = 0;
     ui->tblKatalog->verticalScrollBar()->sliderPosition();
     connect(ui->tblPeminjaman->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(tblPinjamBottom(int)));
+
+    //Sementara disable qplot sebelum fix dikerjakan
+    ui->chart->hide();
 
     //CONNECT
     connect(ui->tabMain,SIGNAL(currentChanged(int)),this,SLOT(getTableData(int)));

@@ -119,7 +119,7 @@
     <rect>
      <x>232</x>
      <y>89</y>
-     <width>100</width>
+     <width>106</width>
      <height>26</height>
     </rect>
    </property>
@@ -159,7 +159,7 @@
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Konek</string>
+       <string>Sambung</string>
       </property>
      </widget>
     </item>
