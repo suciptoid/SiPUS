@@ -385,8 +385,7 @@ void Utama::on_katBHapus_clicked()
 
 void Utama::on_actionExport_triggered()
 {
-    Export *exportWindow = new Export();
-    exportWindow->setAttribute(Qt::WA_DeleteOnClose);
+    Export *exportWindow = new Export(this);
     exportWindow->show();
 }
 

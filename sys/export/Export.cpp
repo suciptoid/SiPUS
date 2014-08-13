@@ -16,10 +16,13 @@ Export::Export(QWidget *parent) :
 
     ui->comExport->addItems(QStringList()<<"Pilih Data"<<"Buku"<<"Peminjaman"<<"Daftar Anggota"<<"Kas");
     ui->progresExport->setVisible(false);
+
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 Export::~Export()
 {
+    qDebug() << this << "destroyed!";
     delete ui;
 }
 
