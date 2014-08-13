@@ -35,7 +35,6 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 public slots:
-    void unLock();
     void tblPinjamBottom(int pos);
 
 private slots:
@@ -102,7 +101,6 @@ private:
     void setTblKatalog();
     void setStatistik();
     void initChart();
-    //void closeEvent(QCloseEvent *bar);
 };
 
 #endif // UTAMA_H

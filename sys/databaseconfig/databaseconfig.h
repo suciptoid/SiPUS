@@ -37,7 +37,6 @@ private:
     //Function
     void ReadConfig();
     void simpanSetting();
-    //FileConfig *config;
     QPointer<LoginWindow> loginWindow;
 };
 

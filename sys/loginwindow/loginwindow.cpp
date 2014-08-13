@@ -10,13 +10,9 @@ LoginWindow::LoginWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LoginWindow)
 {
-    //Signal #not used bro
-//    connect(this,SIGNAL(sendUnlock()),parentWidget(),SLOT(unLock()));
-
     ui->setupUi(this);
     this->setFixedSize(this->size());
     setAttribute(Qt::WA_DeleteOnClose);
-    //User Class
     userLog = new User();
 }
 

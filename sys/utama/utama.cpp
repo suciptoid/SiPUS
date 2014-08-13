@@ -109,11 +109,6 @@ void Utama::on_actionKeluar_triggered()
     this->close();
 }
 
-void Utama::unLock(){
-    this->centralWidget()->setEnabled(true);
-    ui->mainToolBar->setEnabled(true);
-}
-
 void Utama::getTableData(int tab){
     //Slot TabChange
     switch (tab) {
@@ -329,7 +324,7 @@ void Utama::on_openBarcode_triggered()
 void Utama::closeEvent(QCloseEvent *event){
     if(logout) {
         loginWindow->show();
-        event->accept();
+        QMainWindow::closeEvent(event);
         return;
     }
 
