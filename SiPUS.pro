@@ -18,7 +18,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         sys/utama/utama.cpp \
     sys/databaseconfig/databaseconfig.cpp \
-    sys/fileconfig/fileconfig.cpp \
     sys/user/user.cpp \
     sys/loginwindow/loginwindow.cpp \
     modul/peminjaman/peminjaman.cpp \
@@ -41,7 +40,6 @@ SOURCES += main.cpp\
 
 HEADERS  += sys/utama/utama.h \
     sys/databaseconfig/databaseconfig.h \
-    sys/fileconfig/fileconfig.h \
     sys/user/user.h \
     sys/loginwindow/loginwindow.h \
     modul/peminjaman/peminjaman.h \
