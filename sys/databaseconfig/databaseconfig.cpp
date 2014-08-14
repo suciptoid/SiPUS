@@ -39,11 +39,10 @@ DatabaseConfig::DatabaseConfig(QWidget *parent) :
 DatabaseConfig::~DatabaseConfig()
 {
     qDebug() << this << "destroyed";
-    qDebug() << "loginWindow: " << loginWindow.isNull();
+
     if(!loginWindow.isNull()) {
-        LoginWindow *lw = loginWindow.data();
-        delete lw;
-    }
+        delete loginWindow.data();
+    };
     delete ui;
 }
 

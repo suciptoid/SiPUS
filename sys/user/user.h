@@ -11,10 +11,14 @@ public:
     User();
     ~User();
     bool chekLogin(const QString &user, const QString &password);
-    QString getId();
+    QString getId() const;
+
+    bool isAdmin() const;
+
 private:
     DatabaseConfig *dbCon;
     QString userId;
+    bool is_admin;
 };
 
 #endif // USER_H

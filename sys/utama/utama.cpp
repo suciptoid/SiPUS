@@ -31,9 +31,9 @@
 #include <QLocale>
 #include <QSqlQuery>
 
-Utama::Utama(LoginWindow *lg, QWidget *parent) :
+Utama::Utama(LoginWindow *lg, User *user, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Utama), logout(false), loginWindow(lg),barcodeWindow(0),telatWindow(0)
+    ui(new Ui::Utama), logout(false), userLogin(user), loginWindow(lg),barcodeWindow(0),telatWindow(0)
 {
     ui->setupUi(this);
     this->showMaximized();
@@ -102,6 +102,9 @@ Utama::Utama(LoginWindow *lg, QWidget *parent) :
     this->initChart();
     setAttribute(Qt::WA_DeleteOnClose);
 
+    // user mode
+    if(!userLogin->isAdmin())
+        ui->actionUser->setEnabled(false);
 }
 
 void Utama::on_actionKeluar_triggered()
@@ -436,7 +439,6 @@ void Utama::setStatistik(){
 void Utama::on_actionKas_triggered()
 {
     Kas *kas = new Kas(this);
-    kas->setAttribute(Qt::WA_DeleteOnClose);
     kas->showMaximized();
 }
 

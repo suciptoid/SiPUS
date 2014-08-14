@@ -30,7 +30,7 @@ class Utama : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Utama(LoginWindow *lg, QWidget *parent = 0);
+    explicit Utama(LoginWindow *lg, User *user, QWidget *parent = 0);
     ~Utama();
 protected:
     void closeEvent(QCloseEvent *event);

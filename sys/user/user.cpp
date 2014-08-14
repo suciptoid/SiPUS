@@ -7,7 +7,7 @@
 #include <QSqlRecord>
 #include <QDebug>
 
-User::User()
+User::User() : is_admin(false)
 {
 }
 
@@ -28,7 +28,8 @@ bool User::chekLogin(const QString &user, const QString &password){
 
         if(count==1){
             queryLogin.first();
-            userId = queryLogin.value(queryLogin.record().indexOf("id")).toString();;
+            userId = queryLogin.value(queryLogin.record().indexOf("id")).toString();
+            is_admin = (queryLogin.value(queryLogin.record().indexOf("level")).toString() == QString("Admin"));
             ret = true;
         }else{
             ret = false;
@@ -40,9 +41,14 @@ bool User::chekLogin(const QString &user, const QString &password){
     return ret;
 }
 
-QString User::getId(){
+QString User::getId() const{
     return userId;
 }
 
 User::~User(){
+    qDebug() << "User(" << this << ") deleted!";
+}
+
+bool User::isAdmin() const {
+    return is_admin;
 }

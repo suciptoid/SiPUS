@@ -19,6 +19,7 @@ LoginWindow::LoginWindow(QWidget *parent) :
 LoginWindow::~LoginWindow()
 {
     qDebug() << this << "destroyed!";
+    delete userLog;
     delete ui;
 }
 
@@ -36,7 +37,7 @@ void LoginWindow::on_logMasuk_clicked()
         userSession.setValue("USERID",userLog->getId());
         emit sendUnlock();
 //        this->close();
-        (new Utama(this))->show();
+        (new Utama(this,userLog))->show();
         hide();
     }else{
         QMessageBox::warning(this,"Gagal..","Login User Gagal, Periksa Kembali !!");

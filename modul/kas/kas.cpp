@@ -17,7 +17,8 @@ Kas::Kas(QWidget *parent) :
     ui->setupUi(this);
     this->tataLayout();
     this->tataTabel();
-    this->refreshData();
+    this->refreshData();\
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 Kas::~Kas()
