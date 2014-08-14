@@ -11,17 +11,13 @@ class FileConfig;
 class User;
 class LoginWindow;
 class QStandardItemModel;
-class Statistik;
 class Peminjaman;
 class About;
 class DataPeminjaman;
 class KatalogBuku;
 class KatalogPinjam;
 class Barcode;
-class EditBuku;
-class Export;
 class BukuTelat;
-class ListAnggota;
 class QCloseEvent;
 class LoginWindow;
 
