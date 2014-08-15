@@ -42,7 +42,16 @@ void Pustakawan::on_bTambah_clicked()
 
 void Pustakawan::on_bBatal_clicked()
 {
-    ui->lUserId->clear();
-    ui->lNama->clear();
-    ui->lPwd->clear();
+    // Issue #2 https://github.com/showcheap/SiPUS/issues/2
+    if(ui->lUserId->text().isEmpty() && ui->lNama->text().isEmpty() && ui->lPwd->text().isEmpty()){
+        //Tutup window jika semua sudah kosong
+        this->close();
+    }else{
+        //Reset text edit
+        ui->lUserId->clear();
+        ui->lNama->clear();
+        ui->lPwd->clear();
+        //Focus ke text edit pertama
+        ui->lUserId->setFocus();
+    }
 }
