@@ -36,7 +36,9 @@ SOURCES += main.cpp\
     modul/kas/kas.cpp \
     modul/listanggota/listanggota.cpp \
     modul/pustakawan/pustakawan.cpp \
-    sys/plot/qcustomplot.cpp
+    sys/plot/qcustomplot.cpp \
+    modul/pustakawan/pustakawaneditor.cpp \
+    modul/pustakawan/pustakawanmodel.cpp
 
 HEADERS  += sys/utama/utama.h \
     sys/databaseconfig/databaseconfig.h \
@@ -58,7 +60,9 @@ HEADERS  += sys/utama/utama.h \
     modul/kas/kas.h \
     modul/listanggota/listanggota.h \
     modul/pustakawan/pustakawan.h \
-    sys/plot/qcustomplot.h
+    sys/plot/qcustomplot.h \
+    modul/pustakawan/pustakawaneditor.h \
+    modul/pustakawan/pustakawanmodel.h
 
 FORMS    += sys/utama/utama.ui \
     sys/databaseconfig/databaseconfig.ui \
@@ -72,7 +76,8 @@ FORMS    += sys/utama/utama.ui \
     modul/bukutelat/bukutelat.ui \
     modul/kas/kas.ui \
     modul/listanggota/listanggota.ui \
-    modul/pustakawan/pustakawan.ui
+    modul/pustakawan/pustakawan.ui \
+    modul/pustakawan/pustakawaneditor.ui
 
 RESOURCES += \
     glypticon.qrc

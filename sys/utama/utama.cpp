@@ -451,7 +451,6 @@ void Utama::on_actionDaftar_Anggota_triggered()
 void Utama::on_actionUser_triggered()
 {
     Pustakawan *pustWindow = new Pustakawan(this);
-    pustWindow->setAttribute(Qt::WA_DeleteOnClose);
     pustWindow->show();
 }
 
