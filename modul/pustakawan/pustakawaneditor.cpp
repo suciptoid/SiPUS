@@ -59,6 +59,21 @@ void PustakawanEditor::on_simpanButton_clicked()
 void PustakawanEditor::tambahUser()
 {
     QSqlQuery tambahQuery;
+
+    tambahQuery.prepare("SELECT count(user) FROM tbl_pustakawan WHERE user=?");
+    tambahQuery.bindValue(0, ui->userEdit->text());
+    if(tambahQuery.exec()) {
+        tambahQuery.next();
+        if(tambahQuery.value(0).toInt() > 0) {
+            QMessageBox::warning(this, "Gagal tambah user pustakawan", "User pustakawan sudah ada.");
+            return;
+        }
+    }
+    else {
+        QMessageBox::critical(this, "Terjadi kesalahan", tambahQuery.lastError().text());
+        return;
+    }
+
     tambahQuery.prepare("INSERT INTO tbl_pustakawan(user,nama,kunci,level,login) VALUES(?,?,MD5(?),?,?)");
     tambahQuery.bindValue(0, ui->userEdit->text());
     tambahQuery.bindValue(1, ui->namaEdit->text());

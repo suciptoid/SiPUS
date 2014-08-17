@@ -17,7 +17,7 @@ bool User::chekLogin(const QString &user, const QString &password){
     QCryptographicHash hash(QCryptographicHash::Md5);
     hash.addData(password.toLatin1());
     QString hasPwd = hash.result().toHex();
-    queryLogin.prepare("SELECT * FROM tbl_pustakawan WHERE user = ? AND kunci = ?");
+    queryLogin.prepare("SELECT * FROM tbl_pustakawan WHERE user = ? AND kunci = ? AND login=1");
     queryLogin.bindValue(0, user);
     queryLogin.bindValue(1, hasPwd);
     if(queryLogin.exec()){
