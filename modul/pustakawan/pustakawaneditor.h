@@ -22,6 +22,7 @@ private:
     Ui::PustakawanEditor *ui;
     bool edit_mode;
     int pustakawan_id;
+    QString old_user;
 
     void tambahUser();
     void perbaruiUser();

@@ -13,7 +13,7 @@ PustakawanEditor::PustakawanEditor(QWidget *parent, const QString &id, const QSt
     if(!id.isEmpty()) {
         edit_mode = true;
         pustakawan_id = id.toInt();
-        ui->userEdit->setText(user);
+        ui->userEdit->setText(old_user = user);
         ui->namaEdit->setText(nama);
         ui->loginCBox->setChecked(login);
         ui->levelCombo->setCurrentIndex( level == "Admin" ? 0 : 1);
@@ -118,6 +118,25 @@ void PustakawanEditor::perbaruiUser()
     }
 
     QSqlQuery ubahQuery;
+
+    // cek jika user diganti
+    if(old_user != ui->userEdit->text()) {
+        ubahQuery.prepare("SELECT count(user) FROM tbl_pustakawan WHERE user=? AND id <> ?");
+        ubahQuery.bindValue(0, ui->userEdit->text());
+        ubahQuery.bindValue(1, pustakawan_id);
+        if(ubahQuery.exec()) {
+            ubahQuery.next();
+            if(ubahQuery.value(0).toInt() > 0) {
+                QMessageBox::warning(this, "Ubah data user pustakawan gagal", "User sudah ada, harap diperiksa kembali");
+                return;
+            }
+        } else {
+            QMessageBox::critical(this, "Terjadi kesalahan", ubahQuery.lastError().text());
+            return;
+        }
+    }
+
+
     if(ubah_password) {
         ubahQuery.prepare("UPDATE tbl_pustakawan SET user=?, nama=?, password=?, level=?, login=? WHERE id=?");
         ubahQuery.bindValue(0, ui->userEdit->text());
