@@ -48,6 +48,7 @@ void PustakawanEditor::on_simpanButton_clicked()
 
     if(ui->passwordEdit->text() != ui->password2Edit->text()) {
         QMessageBox::warning(this, "Peringatan", "Paswword & ulangi password harus sama!");
+        return;
     }
 
     if(edit_mode)
