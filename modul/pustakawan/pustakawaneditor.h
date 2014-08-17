@@ -12,8 +12,7 @@ class PustakawanEditor : public QDialog
     Q_OBJECT
 
 public:
-    explicit PustakawanEditor(const QString &id = "", const QString &user = "", const QString &nama = "", const QString &level = "", bool login = false, QWidget *parent = 0);
-    explicit PustakawanEditor(QWidget *parent = 0);
+    explicit PustakawanEditor(QWidget *parent = 0, const QString &id = "", const QString &user = "", const QString &nama = "", const QString &level = "", bool login = false);
     ~PustakawanEditor();
 
 private slots:

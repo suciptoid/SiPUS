@@ -5,7 +5,7 @@
 #include <QSqlError>
 #include <QDebug>
 
-PustakawanEditor::PustakawanEditor(const QString &id, const QString &user, const QString &nama, const QString &level, bool login, QWidget *parent) :
+PustakawanEditor::PustakawanEditor(QWidget *parent, const QString &id, const QString &user, const QString &nama, const QString &level, bool login) :
     QDialog(parent),ui(new Ui::PustakawanEditor),edit_mode(false)
 {
     ui->setupUi(this);
@@ -21,10 +21,6 @@ PustakawanEditor::PustakawanEditor(const QString &id, const QString &user, const
     } else {
         setWindowTitle("Tambah data user pustakawan");
     }
-}
-
-PustakawanEditor::PustakawanEditor(QWidget *parent) : PustakawanEditor("", "", "", "", false, parent)
-{
 }
 
 PustakawanEditor::~PustakawanEditor()

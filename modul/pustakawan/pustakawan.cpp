@@ -55,7 +55,7 @@ void Pustakawan::on_ubahButton_clicked()
         QString level = pustakawanModel->data(pustakawanModel->index(baris, 4)).toString();
         bool login = pustakawanModel->data(pustakawanModel->index(baris, 5), Qt::EditRole).toBool();
 
-        PustakawanEditor pe(id, user, nama, level, login, this);
+        PustakawanEditor pe(this, id, user, nama, level, login);
         if(pe.exec()) {
             pustakawanModel->select();
         }
