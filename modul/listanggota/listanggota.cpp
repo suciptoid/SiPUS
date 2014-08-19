@@ -45,6 +45,7 @@ ListAnggota::ListAnggota(QWidget *parent) :
 
 ListAnggota::~ListAnggota()
 {
+    qDebug() << this << "destroyed!";
     delete ui;
 }
 

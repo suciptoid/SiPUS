@@ -9,7 +9,6 @@
 #include <QLocale>
 #include <QMessageBox>
 
-
 Kas::Kas(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Kas)
@@ -18,11 +17,12 @@ Kas::Kas(QWidget *parent) :
     this->tataLayout();
     this->tataTabel();
     this->refreshData();
-    setAttribute(Qt::WA_DeleteOnClose);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 }
 
 Kas::~Kas()
 {
+    qDebug() << this << "destroyed!";
     delete ui;
 }
 

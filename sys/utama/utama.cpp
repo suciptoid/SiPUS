@@ -437,8 +437,8 @@ void Utama::setStatistik(){
 
 void Utama::on_actionKas_triggered()
 {
-    Kas *kas = new Kas(this);
-    kas->showMaximized();
+    Kas kas(this);
+    kas.exec();
 }
 
 void Utama::on_actionDaftar_Anggota_triggered()
@@ -450,8 +450,8 @@ void Utama::on_actionDaftar_Anggota_triggered()
 
 void Utama::on_actionUser_triggered()
 {
-    Pustakawan *pustWindow = new Pustakawan(this);
-    pustWindow->show();
+    Pustakawan p(this);
+    p.exec();
 }
 
 void Utama::initChart(){

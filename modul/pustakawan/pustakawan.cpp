@@ -14,7 +14,6 @@ Pustakawan::Pustakawan(QWidget *parent) :
     ui(new Ui::Pustakawan)
 {
     ui->setupUi(this);
-    setAttribute(Qt::WA_DeleteOnClose);
     pustakawanModel = new PustakawanModel(this);
     pustakawanModel->select();
     pustakawanModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
