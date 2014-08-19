@@ -38,7 +38,7 @@ Pustakawan::~Pustakawan()
 
 void Pustakawan::on_tambahButton_clicked()
 {
-    PustakawanEditor pe(this);
+    PustakawanEditor pe(pustakawanModel, this);
     if(pe.exec()) {
         pustakawanModel->select();
     }
@@ -54,10 +54,8 @@ void Pustakawan::on_ubahButton_clicked()
         QString level = pustakawanModel->data(pustakawanModel->index(baris, 4)).toString();
         bool login = pustakawanModel->data(pustakawanModel->index(baris, 5), Qt::EditRole).toBool();
 
-        PustakawanEditor pe(this, id, user, nama, level, login);
-        if(pe.exec()) {
-            pustakawanModel->select();
-        }
+        PustakawanEditor pe(pustakawanModel, this, id, user, nama, level, login);
+        pe.exec();
     }
     else {
         QMessageBox::warning(this, "Data belum dipilih", "Harap memilih salah satu data untuk diubah!");
@@ -79,18 +77,17 @@ void Pustakawan::on_hapusButton_clicked()
 
     if(ui->pustakawanView->selectionModel()->hasSelection() == 1) {
          int baris = ui->pustakawanView->selectionModel()->selectedRows().at(0).row();
-         int id = pustakawanModel->data(pustakawanModel->index(baris, 0)).toInt();
-         QSqlQuery hapusQuery;
-         hapusQuery.prepare("DELETE FROM tbl_pustakawan WHERE id=?");
-         hapusQuery.bindValue(0, id);
 
-         if(hapusQuery.exec()) {
-             QMessageBox::information(this, "Informasi", "Data user berhasil dihapus");
-             pustakawanModel->select();
+         pustakawanModel->database().transaction();
+         if(!pustakawanModel->removeRow(baris)) {
+             QMessageBox::critical(this, "Terjadi Kesalahan", pustakawanModel->lastError().text());
+             pustakawanModel->database().rollback();
+             return;
          } else {
-             QMessageBox::critical(this, "Terjadi kesalahan", hapusQuery.lastError().text());
+              QMessageBox::information(this, "Informasi", "Data user berhasil dihapus");
+              pustakawanModel->submitAll();
+              pustakawanModel->database().commit();
          }
-
     }
     else {
         QMessageBox::warning(this, "Data belum dipilih", "Harap memilih salah satu data untuk dihapus!");
