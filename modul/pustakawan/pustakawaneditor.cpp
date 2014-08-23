@@ -6,6 +6,7 @@
 #include <QSqlRecord>
 #include <QDebug>
 #include <QCryptographicHash>
+#include <QSortFilterProxyModel>
 #include "pustakawanmodel.h"
 
 
@@ -63,16 +64,15 @@ void PustakawanEditor::on_simpanButton_clicked()
 
 void PustakawanEditor::tambahUser()
 {
-    QSqlQuery tambahQuery;
-
     bool user_found = false;
-    for(int i = 0 ; i < model->rowCount(); i++) {
-        if(model->data(model->index(i, 1)).toString() != ui->userEdit->text()) {
-            continue;
-        }
 
-        user_found = true;
-        break;
+    {
+        QSortFilterProxyModel filter;
+        filter.setSourceModel(model);
+        filter.setFilterCaseSensitivity(Qt::CaseInsensitive);
+        filter.setFilterFixedString(ui->userEdit->text());
+        filter.setFilterKeyColumn(1);
+        user_found = filter.rowCount() > 0;
     }
 
     if(user_found) {
@@ -104,7 +104,6 @@ void PustakawanEditor::perbaruiUser()
 {
     bool ubah_password = false;
     bool user_found = false;
-    QSqlQuery ubahQuery;
 
     if(ui->userEdit->text().trimmed().isEmpty()) {
         QMessageBox::warning(this, "Data tidak lengkap", "User tidak boleh kosong");
@@ -136,14 +135,23 @@ void PustakawanEditor::perbaruiUser()
 
     // cek jika user diganti
     if(old_user != ui->userEdit->text()) {
-        for(int i = 0; i < model->rowCount(); i++) {
-            if(model->data(model->index(i, 0)).toInt() == pustakawan_id)
-                continue;
-            if(model->data(model->index(i, 1)).toString() != ui->userEdit->text())
-                continue;
+        QSortFilterProxyModel filterByUser;
+        filterByUser.setSourceModel(model);
+        filterByUser.setFilterCaseSensitivity(Qt::CaseInsensitive);
+        filterByUser.setFilterFixedString(ui->userEdit->text());
+        filterByUser.setFilterKeyColumn(1);
 
-            user_found = true;
-            break;
+        // jika user ditemukan maka cek idnya sama atau tidak dengan id lama
+        if(filterByUser.rowCount() > 0) {
+            QSortFilterProxyModel filterById;
+            filterById.setSourceModel(&filterByUser);
+            filterById.setFilterFixedString(QString::number(pustakawan_id));
+            filterById.setFilterKeyColumn(0);
+
+            // jika user tersebut idnya berbeda dengan id lama maka user tersebut sudah ada
+            if(filterById.rowCount() == 0) {
+                user_found = true;
+            }
         }
 
         if(user_found) {
@@ -188,7 +196,7 @@ void PustakawanEditor::perbaruiUser()
         model->database().commit();
         accept();
     } else {
-        QMessageBox::critical(this, "Terjadi kesalahan", ubahQuery.lastError().text());
+        QMessageBox::critical(this, "Terjadi kesalahan", model->lastError().text());
         model->database().rollback();
         return;
     }
