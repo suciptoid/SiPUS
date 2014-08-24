@@ -31,7 +31,7 @@ DatabaseConfig::DatabaseConfig(QWidget *parent) :
     if(isDbConnect()) {
         loginWindow->show();
     } else {
-        QMessageBox::critical(this, "Gagal terkoneksi ke databaes", db.lastError().text());
+        QMessageBox::critical(this, "Gagal terkoneksi ke server database", db.lastError().text());
         show();
     }
 }
