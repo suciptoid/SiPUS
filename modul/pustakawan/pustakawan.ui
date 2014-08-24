@@ -65,12 +65,15 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="pustakawanView">
+    <widget class="QTableView" name="pustakawanView">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
     </widget>
    </item>

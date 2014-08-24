@@ -25,9 +25,9 @@ Pustakawan::Pustakawan(QWidget *parent) :
     pustakawanModel->setHeaderData(5, Qt::Horizontal, "Login");
 
     ui->pustakawanView->setModel(pustakawanModel);
-    ui->pustakawanView->header()->hideSection(0);
-    ui->pustakawanView->header()->hideSection(3);
-
+    ui->pustakawanView->horizontalHeader()->hideSection(0);
+    ui->pustakawanView->horizontalHeader()->hideSection(3);
+    ui->pustakawanView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 Pustakawan::~Pustakawan()
