@@ -22,11 +22,11 @@ Pustakawan::Pustakawan(QWidget *parent) :
     pustakawanModel->setHeaderData(2, Qt::Horizontal, "Nama");
     pustakawanModel->setHeaderData(3, Qt::Horizontal, "Kunci");
     pustakawanModel->setHeaderData(4, Qt::Horizontal, "Level");
-    pustakawanModel->setHeaderData(5, Qt::Horizontal, "Login");
 
     ui->pustakawanView->setModel(pustakawanModel);
     ui->pustakawanView->horizontalHeader()->hideSection(0);
     ui->pustakawanView->horizontalHeader()->hideSection(3);
+    ui->pustakawanView->horizontalHeader()->hideSection(5);
     ui->pustakawanView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
