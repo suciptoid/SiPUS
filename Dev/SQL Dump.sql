@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `SiPUS`.`LAP_PEMINJAMAN` (`NO_PEMINJAMAN` INT, `NO_AN
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `SiPUS`.`LAP_PEMINJAMAN`;
 USE `SiPUS`;
-CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `SIPUS`.`LAP_PEMINJAMAN` AS select `PINJAM`.`id` AS `NO_PEMINJAMAN`,`PINJAM`.`siswa` AS `NO_ANGGOTA`,`ANGGOTA`.`nama` AS `NAMA`,`PINJAM`.`buku` AS `KD_BUKU`,`BUKU`.`judul` AS `JUDUL_BUKU`,`PINJAM`.`tgl_pinjam` AS `TGL_PINJAM`,`PINJAM`.`tgl_tempo` AS `JATUH_TEMPO`,`PINJAM`.`tgl_kembali` AS `TGL_KEMBALI`,`PINJAM`.`kembali` AS `KEMBALI`,`PINJAM`.`id_petugas` AS `id_petugas` from ((`SIPUS`.`tbl_peminjaman` `PINJAM` join `SIPUS`.`tbl_anggota` `ANGGOTA` on((`PINJAM`.`siswa` = `ANGGOTA`.`no_induk`))) join `SIPUS`.`tbl_buku` `BUKU` on((`PINJAM`.`buku` = `BUKU`.`kd_buku`)));
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `SiPUS`.`LAP_PEMINJAMAN` AS select `PINJAM`.`id` AS `NO_PEMINJAMAN`,`PINJAM`.`siswa` AS `NO_ANGGOTA`,`ANGGOTA`.`nama` AS `NAMA`,`PINJAM`.`buku` AS `KD_BUKU`,`BUKU`.`judul` AS `JUDUL_BUKU`,`PINJAM`.`tgl_pinjam` AS `TGL_PINJAM`,`PINJAM`.`tgl_tempo` AS `JATUH_TEMPO`,`PINJAM`.`tgl_kembali` AS `TGL_KEMBALI`,`PINJAM`.`kembali` AS `KEMBALI`,`PINJAM`.`id_petugas` AS `id_petugas` from ((`SiPUS`.`tbl_peminjaman` `PINJAM` join `SiPUS`.`tbl_anggota` `ANGGOTA` on((`PINJAM`.`siswa` = `ANGGOTA`.`no_induk`))) join `SiPUS`.`tbl_buku` `BUKU` on((`PINJAM`.`buku` = `BUKU`.`kd_buku`)));
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
